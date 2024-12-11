@@ -18,6 +18,18 @@ def afficher_stock(stock):
     for produit in stock: 
         print("{:<40} {:<10} {:<10}".format(produit["nom"], produit["prix"], produit["stock"]))
 
+
+def tri_produit_stock (stock):
+    n = len(stock)
+    for i in range (n): 
+        for j in range(0, n-i-1):
+            if stock[j]["stock"] > stock[j+1]["stock"]:
+                stock[j], stock[j+1] = stock[j+1], stock[j]               
+    return stock
+
+
 if __name__ == "__main__":
     stock = lire_stock(fichier_stock)
+    tri_produit_stock(stock)
     afficher_stock(stock)
+    

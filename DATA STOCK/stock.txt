@@ -1,5 +1,5 @@
 Ordinateur portable HP Envy, 999, 25
-Écran Samsung 27" 4K UHD, 399, 15
+Ecran Samsung 27" 4K UHD, 399, 15
 Souris Logitech MX Master 3, 89, 50
 Clavier mécanique Corsair K70, 149, 20
 SSD Samsung 970 EVO Plus 1To, 119, 30
@@ -31,7 +31,7 @@ Disque dur interne Seagate Barracuda 2To, 59, 50
 Pâte thermique Arctic MX-4, 6, 300
 Souris gamer Razer DeathAdder V2, 59, 45
 Support pour moniteur, 39, 35
-Écran tactile Dell 24", 249, 10
+Ecran tactile Dell 24", 249, 10
 Switch réseau TP-Link 8 ports, 29, 60
 Onduleur APC 1000VA, 129, 15
 Carte son externe Focusrite Scarlett 2i2, 159, 20
@@ -48,13 +48,13 @@ Serveur NAS Synology DS220+, 349, 12
 Adaptateur secteur universel, 29, 75
 Routeur gaming ASUS RT-AX88U, 349, 10
 Tapis de refroidissement pour PC portable, 19, 90
-Écouteurs sans fil Jabra Elite 85t, 199, 35
+Ecouteurs sans fil Jabra Elite 85t, 199, 35
 Caméra de sécurité Wi-Fi TP-Link Tapo, 39, 80
 Support pour casque gamer, 15, 100
 Batterie externe Anker 20000mAh, 39, 40
 Microphone Rode NT-USB, 149, 25
 Mini PC Intel NUC 11, 599, 10
-Écran gamer MSI Optix 32", 399, 12
+Ecran gamer MSI Optix 32", 399, 12
 Câble Ethernet CAT 6 10m, 15, 200
 Lecteur/graveur Blu-ray externe LG, 99, 25
 Webcam 4K Ultra HD NexiGo, 129, 18
@@ -77,7 +77,7 @@ Caméra de conférence Poly Studio P5, 139, 10
 Micro-casque Plantronics Voyager 5200, 129, 25
 Barre de son Bose TV Speaker, 249, 15
 Casque sans fil Bose QuietComfort 45, 299, 10
-Écran Philips 49" SuperWide, 899, 8
+Ecran Philips 49" SuperWide, 899, 8
 Enceinte intelligente Amazon Echo Dot, 49, 100
 Switch réseau Netgear 24 ports, 249, 10
 Lecteur multimédia NVIDIA Shield TV Pro, 199, 20
@@ -86,7 +86,7 @@ Disque SSD externe Samsung T7 Touch 2To, 249, 15
 Alimentation be quiet! Straight Power 11 850W, 159, 12
 Casque VR Oculus Quest 2, 399, 15
 Station météo connectée Netatmo, 179, 25
-Écran ASUS ProArt 32", 999, 5
+Ecran ASUS ProArt 32", 999, 5
 Carte graphique NVIDIA RTX 4080, 1199, 6
 Processeur Intel Core i9-13900K, 599, 10
 Chargeur USB multiports Aukey, 29, 75

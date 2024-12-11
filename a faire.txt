@@ -1,0 +1,4 @@
+Afficher interface utilisateur avec plusieurs options (trier : stock, prix, nom produit)
+Pouvoir afficher le stock avec les options tri ou non 
+Ajout de produit / suppression de produit 
+Recherche de produit dans le stock (sequentiel et )
