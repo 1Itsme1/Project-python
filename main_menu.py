@@ -19,6 +19,15 @@ def afficher_menu_gestion_produits():
     print("4. Retour au menu principal")
     print("=======================")
 
+def afficher_tri_produit(): 
+    print("\n=== Gestion tri ===")
+    print("1. Trier le stock par nom (ordre alphabétique croissant)")
+    print("2. Trier le stock par nom (ordre alphabétique décroissant)")
+    print("3. Trier le stock par prix (ordre croissant)")
+    print("4. Trier le stock par prix (ordre décroissant)")
+    print("5. Trier le stock par quantité (ordre croissant)")
+    print("6. Trier le stock par quantité (ordre décroissant)")
+
 def lire_stock(fichier):
     stock = []
     with open(fichier, "r", encoding="utf-8") as f: 
