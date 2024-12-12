@@ -4,8 +4,8 @@ def afficher_menu():
     print("\n=== MENU PRINCIPAL ===")
     print("1. Afficher le stock")
     print("2. Filtre stock")
-    print("3. Rechercher un produit par nom")
-    print("4. Gestion produit")
+    print("3. Rechercher un produit")
+    print("4. Gestion produits")
     print("5. Quitter")
     print("======================")
 
@@ -18,7 +18,7 @@ def afficher_menu_gestion_produits():
     print("=============================")
 
 def afficher_tri_produit(): 
-    print("\n=== Tri produits ===")
+    print("\n=== TRI PRODUITS ===")
     print("1. Trier le stock par nom (ordre alphabétique croissant)")
     print("2. Trier le stock par nom (ordre alphabétique décroissant)")
     print("3. Trier le stock par prix (ordre croissant)")
@@ -134,7 +134,7 @@ if __name__ == "__main__":
         elif choix == "2": 
             while True: 
                 afficher_tri_produit()
-                choix_tri = input("Choisissez une options (1-7) : ")
+                choix_tri = input("Choisissez une option (1-7) : ")
                 if choix_tri == "1":
                     stock = tri_par_nom(stock)
                     print("\nStock trié par orde alphabétique croissant")
@@ -172,7 +172,7 @@ if __name__ == "__main__":
                 afficher_stock(resultats)
             else:
                 print(f"\nAucun produit trouvé pour '{nom_recherche}'.")
-        #Pour affichjer gestion produit ajout supp modif 
+        #Pour affichjer gestion produit donc ajout supp modif 
         elif choix == "4":
             while True:
                 afficher_menu_gestion_produits()

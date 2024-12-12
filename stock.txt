@@ -91,3 +91,63 @@ Câble USB-C 2m tressé,15.0,150
 Câble Ethernet CAT 6 10m,15.0,200
 Câble HDMI 4K 2m,9.0,200
 Pâte thermique Arctic MX-4,6.0,300
+Carte graphique NVIDIA RTX 4090,1599.0,5
+Ecran 4K ASUS ROG Swift 32",1299.0,6
+Processeur AMD Ryzen 9 7900X,799.0,8
+Tablette Apple iPad Pro 12.9",1099.0,10
+Clavier Logitech G915 TKL,229.0,15
+Tapis de souris Corsair MM300,39.0,40
+Souris sans fil Logitech MX Master 3S,129.0,25
+Carte graphique MSI RTX 3080,799.0,6
+Routeur Wi-Fi Mesh Netgear Orbi RBK852,599.0,10
+Ecran 27" Dell UltraSharp 4K,799.0,8
+Disque SSD interne Samsung 970 EVO 2To,299.0,12
+Casque Bluetooth Sony WH-1000XM5,349.0,8
+Microphone Shure SM7B,399.0,5
+Imprimante laser Brother HL-L8360CDW,299.0,10
+Processeur AMD Ryzen 5 5600X,259.0,15
+Carte son externe Behringer UMC22,49.0,30
+Webcam Logitech Brio 4K,199.0,10
+Clé USB SanDisk Extreme Pro 256Go,89.0,25
+Disque dur externe LaCie 2TB,119.0,15
+Ventilateur Noctua NF-S12A PWM,19.0,50
+Boîtier PC Cooler Master MasterBox Q300L,69.0,20
+Caméra de surveillance Arlo Pro 4,299.0,8
+Clé USB Samsung FIT Plus 128Go,29.0,50
+Support pour moniteur ajustable Ergotron LX,199.0,12
+Casque gamer SteelSeries Arctis 7,179.0,15
+Disque dur Seagate Expansion 10To,249.0,8
+Station d'accueil USB-C CalDigit TS3 Plus,299.0,10
+Tablette graphique Huion Kamvas Pro 16,399.0,5
+Chargeur sans fil Anker PowerWave 15W,19.0,50
+Câble HDMI 2.1 8K 3m,29.0,40
+Clavier Logitech K800 sans fil,99.0,15
+Disque SSD externe Western Digital 1To,109.0,25
+Hub USB-C Aukey,29.0,75
+Alimentation EVGA SuperNOVA 850W,149.0,10
+Ecran Acer Predator XB271HU 27",649.0,10
+Disque dur interne Toshiba X300 4To,129.0,20
+Station d'accueil USB-C HyperDrive,149.0,15
+Tapis de souris Logitech G640,49.0,30
+Clé USB Lexar 512Go,69.0,15
+Caméra GoPro Hero 11 Black,499.0,5
+Ventirad Corsair iCUE H100i Elite,149.0,10
+Routeur Wi-Fi Netgear Nighthawk AX12,449.0,6
+Disque SSD externe SanDisk 500Go,89.0,30
+Clavier mécanique SteelSeries Apex Pro,199.0,10
+Écouteurs Jabra Elite Active 75t,179.0,12
+Carte mère MSI MPG Z690,299.0,8
+SSD Kingston A2000 500Go,59.0,40
+Boîtier externe USB-C pour SSD NVMe,39.0,25
+Disque dur interne Seagate FireCuda 1To,79.0,25
+Processeur Intel Core i7-13700K,499.0,5
+Ecran Samsung Odyssey G7 32",799.0,8
+Alimentation Corsair RM850x 850W,129.0,20
+Chargeur sans fil Belkin Boost Up 10W,39.0,30
+Ecran 32" Samsung Odyssey G5,349.0,15
+Webcam Razer Kiyo Pro,199.0,5
+Boîtier PC Lian Li PC-011 Dynamic,139.0,8
+Disque SSD interne Crucial P5 1To,109.0,12
+Batterie externe Anker PowerCore 26800,59.0,30
+Haut-parleurs Logitech Z623,149.0,15
+Clé USB Samsung Bar Plus 256Go,69.0,25
