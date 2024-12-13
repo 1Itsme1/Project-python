@@ -1,6 +1,0 @@
-Afficher interface utilisateur avec plusieurs options (trier : stock, prix, nom produit) fait
-Pouvoir afficher le stock avec les options tri ou non fait
-Ajout de produit / suppression de produit / modif optionel fait
-Recherche de produit dans le stock faits
-
-https://lasteminista.com/un-petit-gestionnaire-de-mots-de-passe-avec-python/
