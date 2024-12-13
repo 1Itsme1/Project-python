@@ -179,10 +179,13 @@ if __name__ == "__main__":
                 choix_gestion = input("Choisissez une option (1-4) : ")
                 if choix_gestion == "1":
                     ajouter_produit(stock)
+                    sauvegarder_stock(fichier_stock, stock)
                 elif choix_gestion == "2":
                     supprimer_produit(stock)
+                    sauvegarder_stock(fichier_stock, stock)
                 elif choix_gestion == "3":
                     modifier_produit(stock)
+                    sauvegarder_stock(fichier_stock, stock)
                 elif choix_gestion == "4":
                     break 
                 else:

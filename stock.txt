@@ -1,153 +1,153 @@
-Pâte thermique Arctic MX-4,6.0,300
-Câble Ethernet CAT 6 10m,15.0,200
-Câble HDMI 4K 2m,9.0,200
-Clé USB Kingston 128Go,19.0,150
 Adaptateur USB-C vers HDMI,19.0,150
+Adaptateur secteur universel,29.0,75
+Alimentation Corsair RM750x 750W,119.0,22
+Alimentation Corsair RM850x 850W,129.0,20
+Alimentation EVGA SuperNOVA 850W,149.0,10
+Alimentation Seasonic Prime TX-750,229.0,10
+Alimentation be quiet! Straight Power 11 850W,159.0,12
+Barre de son Bose TV Speaker,249.0,15
+Barrette RAM Crucial Ballistix 16Go DDR4,79.0,40
+Batterie externe Anker 20000mAh,39.0,40
+Batterie externe Anker PowerCore 26800,59.0,30
+Boîtier PC Cooler Master MasterBox Q300L,69.0,20
+Boîtier PC Lian Li PC-011 Dynamic,139.0,8
+Boîtier PC NZXT H510,99.0,30
+Boîtier PC fractal Design Meshify 2,149.0,12
+Boîtier externe USB-C pour SSD NVMe,39.0,25
+Boîtier externe pour disque dur USB 3.0,25.0,50
+Caméra GoPro Hero 11 Black,499.0,5
+Caméra de conférence Poly Studio P5,139.0,10
+Caméra de surveillance Arlo Pro 4,299.0,8
+Caméra de sécurité Wi-Fi TP-Link Tapo,39.0,80
+Carte graphique AMD Radeon RX 6800 XT,649.0,8
+Carte graphique MSI RTX 3080,799.0,6
+Carte graphique NVIDIA RTX 4070,599.0,10
+Carte graphique NVIDIA RTX 4080,1199.0,6
+Carte graphique NVIDIA RTX 4090,1599.0,5
+Carte mère ASUS ROG Strix B550-F,199.0,25
+Carte mère MSI MPG Z690,299.0,8
+Carte son Creative Sound BlasterX AE-5,149.0,15
+Carte son externe Behringer UMC22,49.0,30
+Carte son externe Focusrite Scarlett 2i2,159.0,20
+Casque Bluetooth Sony WH-1000XM5,349.0,8
+Casque VR Oculus Quest 2,399.0,15
+Casque gamer HyperX Cloud II,79.0,40
+Casque gamer SteelSeries Arctis 7,179.0,15
+Casque sans fil Bose QuietComfort 45,299.0,10
+Chargeur USB multiports Aukey,29.0,75
+Chargeur USB-C Anker 65W,39.0,40
+Chargeur sans fil Anker PowerWave 15W,19.0,50
+Chargeur sans fil Belkin Boost Up 10W,39.0,30
+Chargeur sans fil Samsung Duo,69.0,25
+Chargeur voiture USB-C 45W,29.0,90
+Clavier Logitech G915 TKL,229.0,15
+Clavier Logitech K800 sans fil,99.0,15
+Clavier ergonomique Microsoft Sculpt,99.0,15
+Clavier gamer Razer Huntsman Mini,129.0,15
+Clavier mécanique Corsair K70,149.0,20
+Clavier mécanique Keychron K2,89.0,30
+Clavier mécanique SteelSeries Apex Pro,199.0,10
+Clavier sans fil Logitech K380,49.0,60
+Clé USB Kingston 128Go,19.0,150
+Clé USB Lexar 512Go,69.0,15
+Clé USB Samsung Bar Plus 256Go,69.0,25
+Clé USB Samsung FIT Plus 128Go,29.0,50
+Clé USB SanDisk Extreme Pro 256Go,89.0,25
+Câble Ethernet CAT 6 10m,15.0,200
+Câble HDMI 2.1 8K 3m,29.0,40
+Câble HDMI 4K 2m,9.0,200
 Câble USB-C 2m tressé,15.0,150
+Disque SSD externe Samsung T7 Touch 2To,249.0,15
+Disque SSD externe SanDisk 500Go,89.0,30
+Disque SSD externe Western Digital 1To,109.0,25
+Disque SSD interne Crucial P5 1To,109.0,12
+Disque SSD interne Samsung 970 EVO 2To,299.0,12
+Disque dur NAS WD Red 8To,199.0,20
+Disque dur Seagate Expansion 10To,249.0,8
+Disque dur externe LaCie 2TB,119.0,15
+Disque dur externe WD 4To,99.0,35
+Disque dur interne Seagate Barracuda 2To,59.0,50
+Disque dur interne Seagate FireCuda 1To,79.0,25
+Disque dur interne Toshiba X300 4To,129.0,20
+Ecouteurs sans fil Jabra Elite 85t,199.0,35
+Ecran 27" Dell UltraSharp 4K,799.0,8
+Ecran 32" Samsung Odyssey G5,349.0,15
+Ecran 4K ASUS ROG Swift 32",1299.0,6
+Ecran ASUS ProArt 32",999.0,5
+Ecran Acer Predator XB271HU 27",649.0,10
+Ecran Philips 49" SuperWide,899.0,8
+Ecran Samsung 27" 4K UHD,399.0,15
+Ecran Samsung Odyssey G7 32",799.0,8
+Ecran gamer MSI Optix 32",399.0,12
+Ecran tactile Dell 24",249.0,10
 Enceinte intelligente Amazon Echo Dot,49.0,100
 Haut-parleurs Creative Pebble 2.0,25.0,100
+Haut-parleurs Logitech Z623,149.0,15
+Hub Thunderbolt 3 Anker,249.0,8
 Hub USB 3.0 Sabrent 4 ports,19.0,100
-Support pour casque gamer,15.0,100
-Chargeur voiture USB-C 45W,29.0,90
-Tapis de refroidissement pour PC portable,19.0,90
-Caméra de sécurité Wi-Fi TP-Link Tapo,39.0,80
-Tapis de souris SteelSeries QcK+,15.0,80
-Chargeur USB multiports Aukey,29.0,75
-Adaptateur secteur universel,29.0,75
 Hub USB-C Aukey,29.0,75
-Clavier sans fil Logitech K380,49.0,60
-Switch réseau TP-Link 8 ports,29.0,60
-Souris Logitech MX Master 3,89.0,50
-Disque dur interne Seagate Barracuda 2To,59.0,50
-Ventilateur PC Noctua NF-A12x25,29.0,50
-Support réglable pour ordinateur portable,29.0,50
-Clé USB Samsung FIT Plus 128Go,29.0,50
-Boîtier externe pour disque dur USB 3.0,25.0,50
-Ventilateur Noctua NF-S12A PWM,19.0,50
-Chargeur sans fil Anker PowerWave 15W,19.0,50
+Imprimante 3D Creality Ender 3 V2,239.0,20
+Imprimante Epson EcoTank ET-2850,249.0,12
+Imprimante laser Brother HL-L8360CDW,299.0,10
+Lecteur multimédia NVIDIA Shield TV Pro,199.0,20
+Lecteur/graveur Blu-ray externe LG,99.0,25
+Micro-casque Plantronics Voyager 5200,129.0,25
+Microphone Blue Yeti USB,129.0,20
+Microphone Rode NT-USB,149.0,25
+Microphone Shure SM7B,399.0,5
+Mini PC Intel NUC 11,599.0,10
+Moniteur LG UltraWide 34",499.0,12
+Onduleur APC 1000VA,129.0,15
+Ordinateur portable HP Envy,999.0,25
+Processeur AMD Ryzen 5 5600X,259.0,15
+Processeur AMD Ryzen 7 5800X,349.0,15
+Processeur AMD Ryzen 9 7900X,799.0,8
+Processeur Intel Core i7-12700K,419.0,10
+Processeur Intel Core i7-13700K,499.0,5
+Processeur Intel Core i9-13900K,599.0,10
+Pâte thermique Arctic MX-4,6.0,300
 RAM Corsair Vengeance 16Go DDR4,79.0,45
-Souris gamer Razer DeathAdder V2,59.0,45
-Casque gamer HyperX Cloud II,79.0,40
-Barrette RAM Crucial Ballistix 16Go DDR4,79.0,40
+Routeur Wi-Fi Mesh Netgear Orbi RBK852,599.0,10
+Routeur Wi-Fi Netgear Nighthawk AX12,449.0,6
+Routeur Wi-Fi TP-Link AX73,139.0,18
+Routeur gaming ASUS RT-AX88U,349.0,10
 SSD Kingston A2000 500Go,59.0,40
-Tapis de souris RGB SteelSeries QcK Prism,49.0,40
-Chargeur USB-C Anker 65W,39.0,40
-Batterie externe Anker 20000mAh,39.0,40
-Tapis de souris Corsair MM300,39.0,40
-Câble HDMI 2.1 8K 3m,29.0,40
-Ecouteurs sans fil Jabra Elite 85t,199.0,35
-Disque dur externe WD 4To,99.0,35
-Souris Bluetooth Microsoft Arc,79.0,35
-Support pour moniteur,39.0,35
 SSD Samsung 970 EVO Plus 1To,119.0,30
 SSD externe Crucial X6 1To,99.0,30
-Boîtier PC NZXT H510,99.0,30
-Clavier mécanique Keychron K2,89.0,30
-Disque SSD externe SanDisk 500Go,89.0,30
-Batterie externe Anker PowerCore 26800,59.0,30
-Carte son externe Behringer UMC22,49.0,30
-Tapis de souris Logitech G640,49.0,30
-Chargeur sans fil Belkin Boost Up 10W,39.0,30
-Station d'accueil USB-C Anker,89.0,28
-Ordinateur portable HP Envy,999.0,25
-Carte mère ASUS ROG Strix B550-F,199.0,25
-Station météo connectée Netatmo,179.0,25
-Microphone Rode NT-USB,149.0,25
-Micro-casque Plantronics Voyager 5200,129.0,25
-Souris sans fil Logitech MX Master 3S,129.0,25
-Disque SSD externe Western Digital 1To,109.0,25
-Souris verticale Logitech MX Vertical,99.0,25
-Lecteur/graveur Blu-ray externe LG,99.0,25
-Clé USB SanDisk Extreme Pro 256Go,89.0,25
-Disque dur interne Seagate FireCuda 1To,79.0,25
-Chargeur sans fil Samsung Duo,69.0,25
-Clé USB Samsung Bar Plus 256Go,69.0,25
-Webcam Logitech C920,59.0,25
-Switch KVM HDMI USB,49.0,25
-Boîtier externe USB-C pour SSD NVMe,39.0,25
-Alimentation Corsair RM750x 750W,119.0,22
-Imprimante 3D Creality Ender 3 V2,239.0,20
-Lecteur multimédia NVIDIA Shield TV Pro,199.0,20
-Disque dur NAS WD Red 8To,199.0,20
-Carte son externe Focusrite Scarlett 2i2,159.0,20
-Clavier mécanique Corsair K70,149.0,20
-Webcam Logitech StreamCam,129.0,20
-Microphone Blue Yeti USB,129.0,20
-Disque dur interne Toshiba X300 4To,129.0,20
-Alimentation Corsair RM850x 850W,129.0,20
-Station de charge Belkin MagSafe,99.0,20
-Boîtier PC Cooler Master MasterBox Q300L,69.0,20
-Routeur Wi-Fi TP-Link AX73,139.0,18
-Webcam 4K Ultra HD NexiGo,129.0,18
-Ecran Samsung 27" 4K UHD,399.0,15
-Casque VR Oculus Quest 2,399.0,15
-Processeur AMD Ryzen 7 5800X,349.0,15
-Ecran 32" Samsung Odyssey G5,349.0,15
-Processeur AMD Ryzen 5 5600X,259.0,15
-Disque SSD externe Samsung T7 Touch 2To,249.0,15
-Barre de son Bose TV Speaker,249.0,15
-Clavier Logitech G915 TKL,229.0,15
-Casque gamer SteelSeries Arctis 7,179.0,15
-Carte son Creative Sound BlasterX AE-5,149.0,15
-Station d'accueil USB-C HyperDrive,149.0,15
-Haut-parleurs Logitech Z623,149.0,15
-Onduleur APC 1000VA,129.0,15
-Clavier gamer Razer Huntsman Mini,129.0,15
-Disque dur externe LaCie 2TB,119.0,15
-Clavier ergonomique Microsoft Sculpt,99.0,15
-Clavier Logitech K800 sans fil,99.0,15
-Ventirad be quiet! Dark Rock Pro 4,89.0,15
-Clé USB Lexar 512Go,69.0,15
-Tablette Samsung Galaxy Tab S8,799.0,12
-Moniteur LG UltraWide 34",499.0,12
-Ecran gamer MSI Optix 32",399.0,12
 Serveur NAS Synology DS220+,349.0,12
-Disque SSD interne Samsung 970 EVO 2To,299.0,12
-Imprimante Epson EcoTank ET-2850,249.0,12
-Support pour moniteur ajustable Ergotron LX,199.0,12
-Écouteurs Jabra Elite Active 75t,179.0,12
-Alimentation be quiet! Straight Power 11 850W,159.0,12
-Boîtier PC fractal Design Meshify 2,149.0,12
-Disque SSD interne Crucial P5 1To,109.0,12
-Tablette Apple iPad Pro 12.9",1099.0,10
-Ecran Acer Predator XB271HU 27",649.0,10
-Processeur Intel Core i9-13900K,599.0,10
-Mini PC Intel NUC 11,599.0,10
-Carte graphique NVIDIA RTX 4070,599.0,10
-Routeur Wi-Fi Mesh Netgear Orbi RBK852,599.0,10
-Processeur Intel Core i7-12700K,419.0,10
-Tablette graphique Wacom Intuos Pro,349.0,10
-Routeur gaming ASUS RT-AX88U,349.0,10
-Casque sans fil Bose QuietComfort 45,299.0,10
-Imprimante laser Brother HL-L8360CDW,299.0,10
+Souris Bluetooth Microsoft Arc,79.0,35
+Souris Logitech MX Master 3,89.0,50
+Souris gamer Razer DeathAdder V2,59.0,45
+Souris sans fil Logitech MX Master 3S,129.0,25
+Souris verticale Logitech MX Vertical,99.0,25
+Station d'accueil USB-C Anker,89.0,28
 Station d'accueil USB-C CalDigit TS3 Plus,299.0,10
+Station d'accueil USB-C HyperDrive,149.0,15
+Station de charge Belkin MagSafe,99.0,20
+Station météo connectée Netatmo,179.0,25
+Support pour casque gamer,15.0,100
+Support pour moniteur,39.0,35
+Support pour moniteur ajustable Ergotron LX,199.0,12
+Support réglable pour ordinateur portable,29.0,50
+Switch KVM HDMI USB,49.0,25
 Switch réseau Netgear 24 ports,249.0,10
-Ecran tactile Dell 24",249.0,10
-Alimentation Seasonic Prime TX-750,229.0,10
-Webcam Logitech Brio 4K,199.0,10
-Clavier mécanique SteelSeries Apex Pro,199.0,10
-Alimentation EVGA SuperNOVA 850W,149.0,10
-Ventirad Corsair iCUE H100i Elite,149.0,10
-Caméra de conférence Poly Studio P5,139.0,10
-Ecran Philips 49" SuperWide,899.0,8
-Processeur AMD Ryzen 9 7900X,799.0,8
-Ecran 27" Dell UltraSharp 4K,799.0,8
-Ecran Samsung Odyssey G7 32",799.0,8
-Carte graphique AMD Radeon RX 6800 XT,649.0,8
-Casque Bluetooth Sony WH-1000XM5,349.0,8
-Caméra de surveillance Arlo Pro 4,299.0,8
-Carte mère MSI MPG Z690,299.0,8
-Hub Thunderbolt 3 Anker,249.0,8
-Disque dur Seagate Expansion 10To,249.0,8
-Boîtier PC Lian Li PC-011 Dynamic,139.0,8
-Ecran 4K ASUS ROG Swift 32",1299.0,6
-Carte graphique NVIDIA RTX 4080,1199.0,6
-Carte graphique MSI RTX 3080,799.0,6
-Routeur Wi-Fi Netgear Nighthawk AX12,449.0,6
-Carte graphique NVIDIA RTX 4090,1599.0,5
-Ecran ASUS ProArt 32",999.0,5
-Caméra GoPro Hero 11 Black,499.0,5
-Processeur Intel Core i7-13700K,499.0,5
-Microphone Shure SM7B,399.0,5
+Switch réseau TP-Link 8 ports,29.0,60
+Tablette Apple iPad Pro 12.9",1099.0,10
+Tablette Samsung Galaxy Tab S8,799.0,12
 Tablette graphique Huion Kamvas Pro 16,399.0,5
+Tablette graphique Wacom Intuos Pro,349.0,10
+Tapis de refroidissement pour PC portable,19.0,90
+Tapis de souris Corsair MM300,39.0,40
+Tapis de souris Logitech G640,49.0,30
+Tapis de souris RGB SteelSeries QcK Prism,49.0,40
+Tapis de souris SteelSeries QcK+,15.0,80
+Ventilateur Noctua NF-S12A PWM,19.0,50
+Ventilateur PC Noctua NF-A12x25,29.0,50
+Ventirad Corsair iCUE H100i Elite,149.0,10
+Ventirad be quiet! Dark Rock Pro 4,89.0,15
+Webcam 4K Ultra HD NexiGo,129.0,18
+Webcam Logitech Brio 4K,199.0,10
+Webcam Logitech C920,59.0,25
+Webcam Logitech StreamCam,129.0,20
 Webcam Razer Kiyo Pro,199.0,5
+Ecouteurs Jabra Elite Active 75t,179.0,12
