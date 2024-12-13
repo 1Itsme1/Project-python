@@ -53,45 +53,50 @@ def afficher_stock(stock):
     for produit in stock: 
         print("{:<40} {:<10} {:<10}".format(produit["nom"], produit["prix"], produit["stock"]))
 
-#remplacement tri par elements par tri rapide (prblm pour décroissant)
+#remplacement tri par elements par tri rapide
 def tri_rapide(stock, key, reverse=False):
     if len(stock) <= 1:
         return stock
     pivot = stock[len(stock) // 2]
-    gauche = [x for x in stock if (x[key] < pivot[key]) != reverse]
-    milieu = [x for x in stock if x[key] == pivot[key]]
-    droite = [x for x in stock if (x[key] > pivot[key]) != reverse]
+    if reverse:
+        gauche = [x for x in stock if x[key] > pivot[key]]
+        milieu = [x for x in stock if x[key] == pivot[key]]
+        droite = [x for x in stock if x[key] < pivot[key]]
+    else:
+        gauche = [x for x in stock if x[key] < pivot[key]]
+        milieu = [x for x in stock if x[key] == pivot[key]]
+        droite = [x for x in stock if x[key] > pivot[key]]
     return tri_rapide(gauche, key, reverse) + milieu + tri_rapide(droite, key, reverse)
+
 
 #Remplacemenet de la recherche par elements apr de la recherche binaire 
 def recherche_binaire(stock, nom_recherche):
-    stock = tri_rapide(stock, key="nom")
+    stock = tri_rapide(stock, key="nom") 
     gauche = 0
     droite = len(stock) - 1
     while gauche <= droite:
         milieu = (gauche + droite) // 2
-        produit_milieu = stock[milieu] 
-        if produit_milieu == nom_recherche["nom"]:
-            return stock[milieu] 
-        elif produit_milieu < nom_recherche:
+        produit_milieu = stock[milieu]["nom"].lower()
+        if produit_milieu == nom_recherche.lower():
+            return stock[milieu]
+        elif produit_milieu < nom_recherche.lower():
             gauche = milieu + 1
         else:
             droite = milieu - 1
     return None
+
  
 
 def ajouter_produit(stock):
     nom = input("Entrez le nom du produit : ")
     prix = float(input("Entrez le prix du produit (€) : "))
     quantite = int(input("Entrez la quantité en stock : "))
-    
     stock.append({"nom": nom, "prix": prix, "stock": quantite})
     print(f"Produit '{nom}' ajouté avec succès !")
 
 def supprimer_produit(stock):
     nom = input("Entrez le nom du produit à supprimer : ")
     produit_supprime = False
-    
     for produit in stock:
         if produit["nom"].lower() == nom.lower():
             stock.remove(produit)
@@ -129,7 +134,7 @@ def modifier_produit(stock):
 if __name__ == "__main__":
     fichier_stock = "stock.txt"
     stock = lire_stock(fichier_stock)
-
+    
     while True:
         #Pour afficher menuji
         afficher_menu()
@@ -161,10 +166,10 @@ if __name__ == "__main__":
         #Pour recherche de produit  
         elif choix == "3":
             nom_recherche = input("Entrez le nom du produit à rechercher : ")
-            resultats = recherche_binaire(stock, nom_recherche)
-            if resultats:
-                print(f"\nProduits correspondant à '{nom_recherche}' :")
-                afficher_stock(resultats)
+            resultat = recherche_binaire(stock, nom_recherche)
+            if resultat:
+                print(f"\nProduit correspondant à '{nom_recherche}' :")
+                afficher_stock([resultat]) 
             else:
                 print(f"\nAucun produit trouvé pour '{nom_recherche}'.")
         #Pour affichjer gestion produit donc ajout supp modif 
