@@ -150,4 +150,4 @@ Webcam Logitech Brio 4K,199.0,10
 Webcam Logitech C920,59.0,25
 Webcam Logitech StreamCam,129.0,20
 Webcam Razer Kiyo Pro,199.0,5
-Ecouteurs Jabra Elite Active 75t,179.0,12
+Ecouteurs Jabra Elite Active 75t,179.0,11
