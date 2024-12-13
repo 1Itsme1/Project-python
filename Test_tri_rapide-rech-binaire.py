@@ -53,6 +53,7 @@ def afficher_stock(stock):
     for produit in stock: 
         print("{:<40} {:<10} {:<10}".format(produit["nom"], produit["prix"], produit["stock"]))
 
+#remplacement tri par elements par tri rapide (prblm pour décroissant)
 def tri_rapide(stock, key, reverse=False):
     if len(stock) <= 1:
         return stock
@@ -62,9 +63,22 @@ def tri_rapide(stock, key, reverse=False):
     droite = [x for x in stock if (x[key] > pivot[key]) != reverse]
     return tri_rapide(gauche, key, reverse) + milieu + tri_rapide(droite, key, reverse)
 
-def rechercher_produit_par_nom(stock, nom_recherche):
-    resultat = [produit for produit in stock if nom_recherche.lower() in produit["nom"].lower()]
-    return resultat
+#Remplacemenet de la recherche par elements apr de la recherche binaire 
+def recherche_binaire(stock, nom_recherche):
+    stock = tri_rapide(stock, key="nom")
+    gauche = 0
+    droite = len(stock) - 1
+    while gauche <= droite:
+        milieu = (gauche + droite) // 2
+        produit_milieu = stock[milieu] 
+        if produit_milieu == nom_recherche["nom"]:
+            return stock[milieu] 
+        elif produit_milieu < nom_recherche:
+            gauche = milieu + 1
+        else:
+            droite = milieu - 1
+    return None
+ 
 
 def ajouter_produit(stock):
     nom = input("Entrez le nom du produit : ")
@@ -147,7 +161,7 @@ if __name__ == "__main__":
         #Pour recherche de produit  
         elif choix == "3":
             nom_recherche = input("Entrez le nom du produit à rechercher : ")
-            resultats = rechercher_produit_par_nom(stock, nom_recherche)
+            resultats = recherche_binaire(stock, nom_recherche)
             if resultats:
                 print(f"\nProduits correspondant à '{nom_recherche}' :")
                 afficher_stock(resultats)
