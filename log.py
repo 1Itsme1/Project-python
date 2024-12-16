@@ -1,6 +1,6 @@
 import csv
 from hashlib import sha256
-
+from getpass import getpass
 def account():
     
     with open('usernames_passwords.csv', 'r', encoding='utf-8') as csvfile:
@@ -14,7 +14,7 @@ def account():
         
         if log == "oui":
             user = input("Nom d'utilisateur: ").strip()
-            password = input("Mot de passe: ").strip()
+            password = getpass("Mot de passe: ").strip()
             hash_user = sha256(user.encode('utf-8')).hexdigest()
             hash_password = sha256(password.encode('utf-8')).hexdigest()
             for row in rows[1:]:
@@ -28,7 +28,7 @@ def account():
 
         elif log == "non":
             user = input("Choisissez un nom d'utilisateur: ").strip()
-            password = input("Choisissez un mot de passe: ").strip()
+            password = getpass("Choisissez un mot de passe: ").strip()
 
             for row in rows[1:]: 
                 log_user = row[0].strip()
