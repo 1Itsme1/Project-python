@@ -1,4 +1,7 @@
 import sys
+from hashlib import sha256
+from getpass import getpass
+import log 
 
 def afficher_menu():
     print("\n=== MENU PRINCIPAL ===")
