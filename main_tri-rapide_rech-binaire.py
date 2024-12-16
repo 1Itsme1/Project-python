@@ -132,7 +132,7 @@ def modifier_produit(stock):
 #===========================================================================================================
 
 if __name__ == "__main__":
-    fichier_stock = "stock.txt"
+    fichier_stock = "stock.csv"
     stock = lire_stock(fichier_stock)
     
     while True:
