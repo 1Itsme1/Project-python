@@ -2,6 +2,7 @@ import sys
 from hashlib import sha256
 from getpass import getpass
 import log 
+import pandas as pd
 
 def afficher_menu():
     print("\n=== MENU PRINCIPAL ===")
@@ -33,15 +34,11 @@ def afficher_tri_produit():
 
 #===========================================================================================================
 
-from hashlib import sha256
 
 def lire_stock_global(fichier, utilisateur_clair):
     assignations = {}
     utilisateur_hash = sha256(utilisateur_clair.strip().encode('utf-8')).hexdigest()
     
-    print(f"Utilisateur clair : '{utilisateur_clair}'")
-    print(f"Hash utilisateur : '{utilisateur_hash}'")
-
     try:
         with open(fichier, "r", encoding="utf-8") as f:
             for ligne in f:
@@ -66,7 +63,6 @@ def lire_stock_global(fichier, utilisateur_clair):
     except FileNotFoundError:
         print(f"Fichier '{fichier}' introuvable.")
     
-    print(f"Assignations chargées : {assignations}")
     return assignations
 
 def sauvegarder_stock(fichier, assignations):
@@ -86,7 +82,6 @@ def sauvegarder_stock(fichier, assignations):
                     lignes_existantes.add(ligne.strip())
 
 def afficher_stock(assignations, utilisateur_hash):
-    print(f"Assignations disponibles : {assignations}")
     if utilisateur_hash in assignations:
         produits = assignations[utilisateur_hash]
         if produits:
@@ -106,28 +101,45 @@ def rechercher_produit_par_nom(stock, nom_recherche):
     resultat = [produit for produit in stock if nom_recherche.lower() in produit["nom"].lower()]
     return resultat
 
-def ajouter_produit(stock):
+def ajouter_produit(assignations, utilisateur):
     nom = input("Entrez le nom du produit : ")
-    prix = float(input("Entrez le prix du produit (€) : "))
-    quantite = int(input("Entrez la quantité en stock : "))
-    stock.append({"nom": nom, "prix": prix, "stock": quantite})
+    try:
+        prix = float(input("Entrez le prix du produit (€) : "))
+        quantite = int(input("Entrez la quantité en stock : "))
+    except ValueError:
+        print("Prix ou quantité invalide. Essayez encore.")
+        return
+    if utilisateur not in assignations:
+        assignations[utilisateur] = []
+    assignations[utilisateur].append({"nom": nom, "prix": prix, "stock": quantite})
     print(f"Produit '{nom}' ajouté avec succès !")
 
-def supprimer_produit(stock):
+def supprimer_produit(assignations, utilisateur):
+    if utilisateur not in assignations or not assignations[utilisateur]:
+        print("Votre stock est vide. Aucun produit à supprimer.")
+        return
+
     nom = input("Entrez le nom du produit à supprimer : ")
+    produits = assignations[utilisateur]
     produit_supprime = False
-    for produit in stock:
+
+    for produit in produits:
         if produit["nom"].lower() == nom.lower():
-            stock.remove(produit)
+            produits.remove(produit)
             produit_supprime = True
             print(f"Produit '{nom}' supprimé avec succès !")
             break
-        if not produit_supprime:
-            print(f"Aucun produit trouvé avec le nom '{nom}'.")
 
-def modifier_produit(stock):
+    if not produit_supprime:
+        print(f"Aucun produit trouvé avec le nom '{nom}'.")
+
+
+def modifier_produit(assignations, utilisateur ):
+    if utilisateur not in assignations or not assignations[utilisateur]:
+        print("Votre stock est vide. Aucun produit à modifier.")
+        return
     nom = input("Entrez le nom du produit à modifier : ")
-    for produit in stock:
+    for produit in produits:
         if produit["nom"].lower() == nom.lower():
             print(f"Produit trouvé: {produit['nom']}")
             choix = input("Que voulez-vous modifier ? (1. Nom, 2. Prix, 3. Quantité) : ")
@@ -157,9 +169,10 @@ def initialiser_stock_utilisateur(assignations, utilisateur):
 
 if __name__ == "__main__":
     fichier_produit = "assignations_stock.csv"
+    fichier_compromis = 'C:/Users/rmeney/Documents/GitHub/rockyou-sha256.txt'
     print("Connexion au système requise.")
-    check, user = log.account() 
-    
+    check, user = log.account()
+
     if not check:
         print("Accès refusé. Vous devez vous connecter pour continuer.")
         sys.exit()  
@@ -168,7 +181,6 @@ if __name__ == "__main__":
 
     assignations = lire_stock_global(fichier_produit, user)
 
-   
 
     # Menu principal
     while True:

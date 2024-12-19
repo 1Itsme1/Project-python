@@ -28,7 +28,7 @@ def hash_file(input_file, output_file):
         print(f"Une erreur s'est produite : {e}")
 
 
-input_file = 'rockyou.txt'
-output_file = 'rockyou-sha256.txt'
+input_file = 'C:/Users/rmeney/Documents/GitHub/rockyou.txt'
+output_file = 'C:/Users/rmeney/Documents/GitHub/rockyou-sha256.txt'
 
 hash_file(input_file, output_file)
