@@ -65,20 +65,34 @@ def lire_stock_global(fichier, utilisateur_clair):
 
 
 def sauvegarder_stock(fichier_produit, assignations):
-    lignes_existantes = set()
+    # Lire toutes les lignes existantes
+    lignes_anciennes = {}
     try:
         with open(fichier_produit, "r", encoding="utf-8") as f:
             for ligne in f:
-                lignes_existantes.add(ligne.strip()) 
+                ligne = ligne.strip()
+                if ligne:
+                    utilisateur, nom, prix, quantite = ligne.split(",")
+                    if utilisateur not in lignes_anciennes:
+                        lignes_anciennes[utilisateur] = []
+                    lignes_anciennes[utilisateur].append({
+                        "nom": nom,
+                        "prix": float(prix),
+                        "stock": int(quantite)
+                    })
     except FileNotFoundError:
-        pass 
-    with open(fichier_produit, "a", encoding="utf-8") as f:
-        for utilisateur, produits in assignations.items():
+        # Le fichier n'existe pas encore, aucun problème
+        pass
+
+    # Mettre à jour les données pour l'utilisateur actuel
+    for utilisateur, produits in assignations.items():
+        lignes_anciennes[utilisateur] = produits
+
+    # Réécrire tout le fichier avec les données combinées
+    with open(fichier_produit, "w", encoding="utf-8") as f:
+        for utilisateur, produits in lignes_anciennes.items():
             for produit in produits:
-                ligne = f"{utilisateur},{produit['nom']},{produit['prix']},{produit['stock']}\n"
-                if ligne.strip() not in lignes_existantes:
-                    f.write(ligne)
-                    lignes_existantes.add(ligne.strip())
+                f.write(f"{utilisateur},{produit['nom']},{produit['prix']},{produit['stock']}\n")
 
 
 def afficher_stock(assignations, utilisateur_hash):
@@ -123,11 +137,13 @@ def supprimer_produit(assignations, utilisateur):
     if utilisateur not in assignations or not assignations[utilisateur]:
         print("Votre stock est vide. Aucun produit à supprimer.")
         return
+
     nom = input("Entrez le nom du produit à supprimer : ")
     produits = assignations[utilisateur]
     produit_supprime = False
 
-    for produit in produits:
+    # Supprimer le produit en vérifiant le nom
+    for produit in produits[:]:  # Parcourir une copie de la liste
         if produit["nom"].lower() == nom.lower():
             produits.remove(produit)
             produit_supprime = True
@@ -136,9 +152,8 @@ def supprimer_produit(assignations, utilisateur):
 
     if not produit_supprime:
         print(f"Aucun produit trouvé avec le nom '{nom}'.")
-    
-    sauvegarder_stock(fichier_produit, assignations)
-
+    else:
+        sauvegarder_stock(fichier_produit, assignations)  # Sauvegarder les modifications pour tous
 
 def modifier_produit(assignations, utilisateur):
     if utilisateur not in assignations or not assignations[utilisateur]:
