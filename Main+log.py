@@ -2,7 +2,6 @@ import sys
 from hashlib import sha256
 from getpass import getpass
 import log 
-import pandas as pd
 
 def afficher_menu():
     print("\n=== MENU PRINCIPAL ===")
@@ -34,7 +33,6 @@ def afficher_tri_produit():
 
 #===========================================================================================================
 
-
 def lire_stock_global(fichier, utilisateur_clair):
     assignations = {}
     utilisateur_hash = sha256(utilisateur_clair.strip().encode('utf-8')).hexdigest()
@@ -65,21 +63,23 @@ def lire_stock_global(fichier, utilisateur_clair):
     
     return assignations
 
-def sauvegarder_stock(fichier, assignations):
+
+def sauvegarder_stock(fichier_produit, assignations):
     lignes_existantes = set()
     try:
-        with open(fichier, "r", encoding="utf-8") as f:
+        with open(fichier_produit, "r", encoding="utf-8") as f:
             for ligne in f:
                 lignes_existantes.add(ligne.strip()) 
     except FileNotFoundError:
         pass 
-    with open(fichier, "a", encoding="utf-8") as f:
+    with open(fichier_produit, "a", encoding="utf-8") as f:
         for utilisateur, produits in assignations.items():
             for produit in produits:
                 ligne = f"{utilisateur},{produit['nom']},{produit['prix']},{produit['stock']}\n"
                 if ligne.strip() not in lignes_existantes:
                     f.write(ligne)
                     lignes_existantes.add(ligne.strip())
+
 
 def afficher_stock(assignations, utilisateur_hash):
     if utilisateur_hash in assignations:
@@ -94,12 +94,15 @@ def afficher_stock(assignations, utilisateur_hash):
     else:
         print("Utilisateur non trouvé.")
 
+
 def tri_rapide(stock, key, reverse=False):
     return sorted(stock, key=lambda x: x[key], reverse=reverse)
+
 
 def rechercher_produit_par_nom(stock, nom_recherche):
     resultat = [produit for produit in stock if nom_recherche.lower() in produit["nom"].lower()]
     return resultat
+
 
 def ajouter_produit(assignations, utilisateur):
     nom = input("Entrez le nom du produit : ")
@@ -113,12 +116,13 @@ def ajouter_produit(assignations, utilisateur):
         assignations[utilisateur] = []
     assignations[utilisateur].append({"nom": nom, "prix": prix, "stock": quantite})
     print(f"Produit '{nom}' ajouté avec succès !")
+    sauvegarder_stock(fichier_produit, assignations)
+
 
 def supprimer_produit(assignations, utilisateur):
     if utilisateur not in assignations or not assignations[utilisateur]:
         print("Votre stock est vide. Aucun produit à supprimer.")
         return
-
     nom = input("Entrez le nom du produit à supprimer : ")
     produits = assignations[utilisateur]
     produit_supprime = False
@@ -132,13 +136,18 @@ def supprimer_produit(assignations, utilisateur):
 
     if not produit_supprime:
         print(f"Aucun produit trouvé avec le nom '{nom}'.")
+    
+    sauvegarder_stock(fichier_produit, assignations)
 
 
-def modifier_produit(assignations, utilisateur ):
+def modifier_produit(assignations, utilisateur):
     if utilisateur not in assignations or not assignations[utilisateur]:
         print("Votre stock est vide. Aucun produit à modifier.")
         return
+    
     nom = input("Entrez le nom du produit à modifier : ")
+    produits = assignations[utilisateur]
+
     for produit in produits:
         if produit["nom"].lower() == nom.lower():
             print(f"Produit trouvé: {produit['nom']}")
@@ -148,18 +157,25 @@ def modifier_produit(assignations, utilisateur ):
                 produit["nom"] = nouveau_nom
                 print(f"Nom modifié en '{nouveau_nom}'")
             elif choix == "2":
-                nouveau_prix = float(input("Entrez le nouveau prix : "))
-                produit["prix"] = nouveau_prix
-                print(f"Prix modifié à {nouveau_prix}€")
+                try:
+                    nouveau_prix = float(input("Entrez le nouveau prix : "))
+                    produit["prix"] = nouveau_prix
+                    print(f"Prix modifié à {nouveau_prix}€")
+                except ValueError:
+                    print("Le prix doit être un nombre valide.")
             elif choix == "3":
-                nouvelle_quantite = int(input("Entrez la nouvelle quantité : "))
-                produit["stock"] = nouvelle_quantite
-                print(f"Quantité modifiée à {nouvelle_quantite}")
+                try:
+                    nouvelle_quantite = int(input("Entrez la nouvelle quantité : "))
+                    produit["stock"] = nouvelle_quantite
+                    print(f"Quantité modifiée à {nouvelle_quantite}")
+                except ValueError:
+                    print("La quantité doit être un nombre entier valide.")
             else:
                 print("Choix invalide.")
+            sauvegarder_stock(fichier_produit, assignations)
             return
+    
     print(f"Aucun produit trouvé avec le nom '{nom}'.")
-
 
 def initialiser_stock_utilisateur(assignations, utilisateur):
     if utilisateur not in assignations:
@@ -225,13 +241,13 @@ if __name__ == "__main__":
                 choix_gestion = input("Choisissez une option (1-4) : ")
                 if choix_gestion == "1":
                     ajouter_produit(assignations, utilisateur_hash)
-                    sauvegarder_stock(fichier_produit, assignations)
+                    
                 elif choix_gestion == "2":
                     supprimer_produit(assignations, utilisateur_hash)
-                    sauvegarder_stock(fichier_produit, assignations)
+                    
                 elif choix_gestion == "3":
                     modifier_produit(assignations, utilisateur_hash)
-                    sauvegarder_stock(fichier_produit, assignations)
+                    
                 elif choix_gestion == "4":
                     break
                 else:
