@@ -37,51 +37,67 @@ from hashlib import sha256
 
 def lire_stock_global(fichier, utilisateur_clair):
     assignations = {}
-    utilisateur_hash = sha256(utilisateur_clair.encode('utf-8')).hexdigest()
+    utilisateur_hash = sha256(utilisateur_clair.strip().encode('utf-8')).hexdigest()
+    
+    print(f"Utilisateur clair : '{utilisateur_clair}'")
+    print(f"Hash utilisateur : '{utilisateur_hash}'")
 
-    with open(fichier, "r", encoding="utf-8") as f:
-        for ligne in f:
-            ligne = ligne.strip()
-            if not ligne:
-                continue
-            try:
-                
-                utilisateur_dans_csv, nom, prix, quantite = [part.strip() for part in ligne.split(",")]
-                prix = float(prix)
-                quantite = int(quantite)
+    try:
+        with open(fichier, "r", encoding="utf-8") as f:
+            for ligne in f:
+                ligne = ligne.strip()
+                if not ligne:
+                    continue
+                try:
+                    utilisateur_dans_csv, nom, prix, quantite = [part.strip() for part in ligne.split(",")]
+                    prix = float(prix)
+                    quantite = int(quantite)
 
-                #debogoage
-                print(f"Vérification utilisateur : {utilisateur_dans_csv} (hashé) => comparé avec {utilisateur_hash} (hashé)")
-
-                if utilisateur_hash == utilisateur_dans_csv:
-                    if utilisateur_dans_csv not in assignations:
-                        assignations[utilisateur_dans_csv] = []
-                    assignations[utilisateur_dans_csv].append({
-                        "nom": nom,
-                        "prix": prix,
-                        "stock": quantite
-                    })
-
-            except ValueError as e:
-                print(f"Erreur de format dans la ligne: {ligne}. Détails de l'erreur: {e}")
-                continue
-    #debogoage            
-    print(f"Assignations pour l'utilisateur : {assignations}")
+                    if utilisateur_hash == utilisateur_dans_csv:
+                        if utilisateur_dans_csv not in assignations:
+                            assignations[utilisateur_dans_csv] = []
+                        assignations[utilisateur_dans_csv].append({
+                            "nom": nom,
+                            "prix": prix,
+                            "stock": quantite
+                        })
+                except ValueError as e:
+                    print(f"Erreur dans la ligne : {ligne}. Détails : {e}")
+    except FileNotFoundError:
+        print(f"Fichier '{fichier}' introuvable.")
+    
+    print(f"Assignations chargées : {assignations}")
     return assignations
 
 def sauvegarder_stock(fichier, assignations):
-    with open(fichier, "w", encoding="utf-8") as f:
+    lignes_existantes = set()
+    try:
+        with open(fichier, "r", encoding="utf-8") as f:
+            for ligne in f:
+                lignes_existantes.add(ligne.strip()) 
+    except FileNotFoundError:
+        pass 
+    with open(fichier, "a", encoding="utf-8") as f:
         for utilisateur, produits in assignations.items():
-            utilisateur_hash = sha256(utilisateur.encode('utf-8')).hexdigest()
             for produit in produits:
-                f.write(f"{utilisateur_hash},{produit['nom']},{produit['prix']},{produit['stock']}\n")
+                ligne = f"{utilisateur},{produit['nom']},{produit['prix']},{produit['stock']}\n"
+                if ligne.strip() not in lignes_existantes:
+                    f.write(ligne)
+                    lignes_existantes.add(ligne.strip())
 
-
-def afficher_stock(stock):
-    print("\n{:<40} {:<10} {:<10}".format("Nom du produit", "Prix (€)", "Stock"))
-    print("=" * 60)
-    for produit in stock: 
-        print("{:<40} {:<10} {:<10}".format(produit["nom"], produit["prix"], produit["stock"]))
+def afficher_stock(assignations, utilisateur_hash):
+    print(f"Assignations disponibles : {assignations}")
+    if utilisateur_hash in assignations:
+        produits = assignations[utilisateur_hash]
+        if produits:
+            print("\n{:<40} {:<10} {:<10}".format("Nom du produit", "Prix (€)", "Stock"))
+            print("=" * 60)
+            for produit in produits:
+                print("{:<40} {:<10} {:<10}".format(produit["nom"], produit["prix"], produit["stock"]))
+        else:
+            print("Votre stock est vide. Vous pouvez commencer à ajouter des produits !")
+    else:
+        print("Utilisateur non trouvé.")
 
 def tri_rapide(stock, key, reverse=False):
     return sorted(stock, key=lambda x: x[key], reverse=reverse)
@@ -147,26 +163,12 @@ if __name__ == "__main__":
     if not check:
         print("Accès refusé. Vous devez vous connecter pour continuer.")
         sys.exit()  
-
+    utilisateur_hash = sha256(user.strip().encode('utf-8')).hexdigest()
     print(f"Bienvenue {user} ! Vous êtes connecté.")  
 
     assignations = lire_stock_global(fichier_produit, user)
-    #debogoage
-    print(f"Assignations après lecture : {assignations}")
-    
-    if user not in assignations:
-        assignations[user] = []
 
-    stock_utilisateur = assignations[user]
-    #debogoage
-    if user in assignations:
-        print(f"Utilisateur trouvé dans assignations : {user}")
-    else:
-        print(f"Utilisateur non trouvé dans assignations : {user}")
    
-    if not stock_utilisateur:
-
-        print("Votre stock est vide. Vous pouvez commencer à ajouter des produits !")
 
     # Menu principal
     while True:
@@ -174,49 +176,35 @@ if __name__ == "__main__":
         choix = input("Choisissez une option (1-5) : ")
 
         if choix == "1":
-            #debogoage
-            print(f"Stock utilisateur à afficher : {stock_utilisateur}")
-            if stock_utilisateur:
-                afficher_stock(stock_utilisateur)
+                afficher_stock(assignations, utilisateur_hash)
+        elif choix == "2": 
+            produits = assignations.get(utilisateur_hash, [])
+            if produits:
+                afficher_tri_produit()
+                choix_tri = input("Choisissez une option (1-7) : ")
+                key_map = {"1": "nom", "2": "nom", "3": "prix", "4": "prix", "5": "stock", "6": "stock"}
+                reverse_map = {"1": False, "2": True, "3": False, "4": True, "5": False, "6": True}
+                if choix_tri in key_map:
+                    produits = tri_rapide(produits, key=key_map[choix_tri], reverse=reverse_map[choix_tri])
+                    assignations[utilisateur_hash] = produits
+                    afficher_stock(assignations, utilisateur_hash)
             else:
-                afficher_stock(stock_utilisateur)
                 print("Votre stock est vide.")
 
-        elif choix == "2": 
-            if stock_utilisateur:
-                while True:
-                    afficher_tri_produit()
-                    choix_tri = input("Choisissez une option (1-7) : ")
-                    if choix_tri == "1":
-                        stock_utilisateur = tri_rapide(stock_utilisateur, key="nom")
-                    elif choix_tri == "2":
-                        stock_utilisateur = tri_rapide(stock_utilisateur, key="nom", reverse=True)
-                    elif choix_tri == "3":
-                        stock_utilisateur = tri_rapide(stock_utilisateur, key="prix")
-                    elif choix_tri == "4":
-                        stock_utilisateur = tri_rapide(stock_utilisateur, key="prix", reverse=True)
-                    elif choix_tri == "5":
-                        stock_utilisateur = tri_rapide(stock_utilisateur, key="stock")
-                    elif choix_tri == "6":
-                        stock_utilisateur = tri_rapide(stock_utilisateur, key="stock", reverse=True)
-                    elif choix_tri == "7":
-                        break
-                    afficher_stock(stock_utilisateur)
-            else:
-                afficher_stock(stock_utilisateur)
-                print("Votre stock est vide. Ajoutez des produits avant de les trier.")
-
         elif choix == "3": 
-            if stock_utilisateur:
+            produits = assignations.get(utilisateur_hash, [])
+            if produits:
                 nom_recherche = input("Entrez le nom du produit à rechercher : ")
-                resultats = rechercher_produit_par_nom(stock_utilisateur, nom_recherche)
+                resultats = rechercher_produit_par_nom(produits, nom_recherche)
                 if resultats:
                     print(f"\nProduits correspondant à '{nom_recherche}' :")
-                    afficher_stock(resultats)
+                    print("\n{:<40} {:<10} {:<10}".format("Nom du produit", "Prix (€)", "Stock"))
+                    print("=" * 60)
+                    for produit in resultats:
+                        print("{:<40} {:<10} {:<10}".format(produit["nom"], produit["prix"], produit["stock"]))
                 else:
                     print(f"\nAucun produit trouvé pour '{nom_recherche}'.")
             else:
-                afficher_stock(stock_utilisateur)
                 print("Votre stock est vide. Ajoutez des produits avant de rechercher.")
 
         elif choix == "4": 
@@ -224,13 +212,13 @@ if __name__ == "__main__":
                 afficher_menu_gestion_produits()
                 choix_gestion = input("Choisissez une option (1-4) : ")
                 if choix_gestion == "1":
-                    ajouter_produit(stock_utilisateur)
+                    ajouter_produit(assignations, utilisateur_hash)
                     sauvegarder_stock(fichier_produit, assignations)
                 elif choix_gestion == "2":
-                    supprimer_produit(stock_utilisateur)
+                    supprimer_produit(assignations, utilisateur_hash)
                     sauvegarder_stock(fichier_produit, assignations)
                 elif choix_gestion == "3":
-                    modifier_produit(stock_utilisateur)
+                    modifier_produit(assignations, utilisateur_hash)
                     sauvegarder_stock(fichier_produit, assignations)
                 elif choix_gestion == "4":
                     break
@@ -241,6 +229,5 @@ if __name__ == "__main__":
             sauvegarder_stock(fichier_produit, assignations)
             print("À bientôt !")
             sys.exit()
-
         else:
             print("Option invalide. Veuillez choisir une option entre 1 et 5 !")

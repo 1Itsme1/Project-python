@@ -13,7 +13,6 @@ def account():
         
         if log == "oui":
             user = input("Nom d'utilisateur: ").strip()
-            user_entrer = sha256(user.encode('utf-8')).hexdigest()
             password = getpass("Mot de passe: ").strip()
             hash_user = sha256(user.encode('utf-8')).hexdigest()
             hash_password = sha256(password.encode('utf-8')).hexdigest()
