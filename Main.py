@@ -5,6 +5,7 @@ import log
 import requests
 import hashlib 
 import csv 
+ 
 
 def afficher_menu():
     print("\n=== MENU PRINCIPAL ===")
@@ -43,9 +44,9 @@ def afficher_compte():
 
 #===========================================================================================================
 
-def lire_stock_global(fichier, utilisateur_clair):
+def lire_stock_global(fichier, user):
     assignations = {}
-    utilisateur_hash = sha256(utilisateur_clair.strip().encode('utf-8')).hexdigest()
+    utilisateur_hash = sha256(user.strip().encode('utf-8')).hexdigest()
     
     try:
         with open(fichier, "r", encoding="utf-8") as f:
@@ -113,7 +114,7 @@ def afficher_stock(assignations, utilisateur_hash):
         else:
             print("Votre stock est vide. Vous pouvez commencer à ajouter des produits !")
     else:
-        print("Utilisateur non trouvé.")
+        print("Votre stock est vide. Vous pouvez commencer à ajouter des produits !")
 #===========================================================================================================
 
 def tri_rapide(stock, key, reverse=False):
@@ -218,24 +219,123 @@ def verifier_password(password):
     hashes = (line.split(':') for line in response.text.splitlines())
     for returned_suffix, count in hashes:
         if returned_suffix == suffix:
+            print("=" * 60)
             print(f"Mot de passe compromis ! Trouvé {count} fois dans les fuites. \nChangez immédiatement de mot de passe dans la rubrique 'Compte' en appuyant sur '0'")
+            print("=" * 60)
+
             found = True
     if not found:
         print("Mot de passe sécurisé (non trouvé dans les fuites).")
         
 #===========================================================================================================
+def changer_mot_de_passe(fichier_usernames_passwords, utilisateur_hash):
+    from log import generer_salt
+    
+    with open(fichier_usernames_passwords, 'r', encoding='utf-8') as csvfilepass:
+        reader = csv.reader(csvfilepass, delimiter=',')
+        next(reader, None)
+        utilisateurs = list(reader)
 
+    utilisateur_data = None
+    for row in utilisateurs:
+        if row[0] == utilisateur_hash:  
+            utilisateur_data = row
+            print(f"Utilisateur trouvé : {utilisateur_data}")
+            break
+
+    if not utilisateur_data:
+        print("Utilisateur introuvable.")
+        return
+
+   
+    while True:
+        nouveau_mot_de_passe = input("Entrez un nouveau mot de passe : ")
+        confirmer_mot_de_passe = input("Confirmez le nouveau mot de passe : ")
+
+        if nouveau_mot_de_passe != confirmer_mot_de_passe:
+            print("Les mots de passe ne correspondent pas. Essayez à nouveau.")
+            continue
+
+        if len(nouveau_mot_de_passe) < 8 or not any(c.isdigit() for c in nouveau_mot_de_passe) or not any(c.isupper() for c in nouveau_mot_de_passe):
+            print("Le mot de passe doit comporter au moins 8 caractères, inclure un chiffre et une majuscule.")
+            continue
+
+        break
+
+    
+    nouveau_salt = generer_salt() 
+    hash_nouveau_mot_de_passe = hashlib.sha256((nouveau_salt + nouveau_mot_de_passe).encode('utf-8')).hexdigest()
+    
+    utilisateur_data[1] = nouveau_salt
+    utilisateur_data[2] = hash_nouveau_mot_de_passe
+
+    
+    with open(fichier_usernames_passwords, 'w', encoding='utf-8', newline='') as csvfilepass:
+        writer = csv.writer(csvfilepass, delimiter=',')
+        
+        
+        writer.writerow(["Utilisateur", "Salt", "Mot de passe"])
+
+       
+        for row in utilisateurs:
+            writer.writerow(row)
+
+    print("Mot de passe mis à jour avec succès !")
+
+#===========================================================================================================
+def suppression_compte(fichier_usernames_passwords, utilisateur_hash, verifier_mot_de_passe):
+    
+    with open(fichier_usernames_passwords, 'r', encoding='utf-8') as csvfilepass:
+        reader = csv.reader(csvfilepass, delimiter=',')
+        header = next(reader, None)  
+        utilisateurs = list(reader) 
+
+    
+    utilisateur_data = next((row for row in utilisateurs if row[0] == utilisateur_hash), None)
+    if not utilisateur_data:
+        print("Utilisateur introuvable.")
+        return
+
+    
+    confirmation = input("Êtes-vous sûr de vouloir supprimer votre compte ? Tapez 'OUI' pour confirmer : ").strip().upper()
+    if confirmation != "OUI":
+        print("Suppression annulée. Retour au menu principal.")
+        return
+
+   
+    mot_de_passe = input("Entrez votre mot de passe pour confirmer : ").strip()
+    if not verifier_mot_de_passe(utilisateur_data[1], utilisateur_data[2], mot_de_passe):
+        print("Mot de passe incorrect. Suppression annulée.")
+        return
+
+  
+    utilisateurs_sans_compte = [row for row in utilisateurs if row[0] != utilisateur_hash]
+
+    
+    with open(fichier_usernames_passwords, 'w', encoding='utf-8', newline='') as csvfilepass:
+        writer = csv.writer(csvfilepass, delimiter=',')
+        if header:
+            writer.writerow(header) 
+        writer.writerows(utilisateurs_sans_compte)  
+
+    print("Votre compte a été supprimé avec succès.") 
+
+def verifier_mot_de_passe(salt, mot_de_passe_hash, mot_de_passe):
+    import hashlib
+    hash_calculé = hashlib.sha256((salt + mot_de_passe).encode('utf-8')).hexdigest()
+    return hash_calculé == mot_de_passe_hash       
+        
 #===========================================================================================================
 
 if __name__ == "__main__":
     fichier_produit = "./Data/assignations_stock.csv"
-    fichier_compromis = 'C:/Users/rmeney/Documents/GitHub/rockyou-sha256.txt'
+    #fichier_compromis = 'C:/Users/rmeney/Documents/GitHub/rockyou-sha256.txt'
+    fichier_usernames_passwords = "./Data/usernames_passwords.csv"
     print("Connexion au système requise.")
     check, user = log.account()
     
-
     if not check:
-        print("Accès refusé. Vous devez vous connecter pour continuer.")
+        print("Accès refusé. Si vous n'avez pas de compte créez en un ! \nSinon l'email ou le mot de passe est incorrect !")
         sys.exit()
     
     utilisateur_hash = sha256(user.strip().encode('utf-8')).hexdigest()
@@ -252,17 +352,17 @@ if __name__ == "__main__":
         afficher_menu()
         choix = input("Choisissez une option (0-5) : ")
 
-        #if choix == "0":
-            #afficher_compte()
-            #choix_compte = input("Choisissez une option (1-2) : ")
-            #if choix_compte == "1":
-                #changer_mot_de_passe(fichier_produit, user)
-            #elif choix_compte == "2":
-                #print("Option de suppression de compte encore non implémentée.")
-            #else:
-                #print("Option invalide.")
+        if choix == "0":
+            afficher_compte()
+            choix_compte = input("Choisissez une option (1-2) : ")
+            if choix_compte == "1":
+                changer_mot_de_passe(fichier_usernames_passwords, utilisateur_hash)
+            elif choix_compte == "2":
+                suppression_compte(fichier_usernames_passwords, utilisateur_hash)
+            else:
+                print("Option invalide. Veuillez choisir une options entre 1 et 2.")
 
-        if choix == "1":
+        elif choix == "1":
                 afficher_stock(assignations, utilisateur_hash)
               
         elif choix == "2": 
@@ -318,4 +418,4 @@ if __name__ == "__main__":
             print("À bientôt !")
             sys.exit()
         else:
-            print("Option invalide. Veuillez choisir une option entre 1 et 5 !")
+            print("Option invalide. Veuillez choisir une option entre 0 et 5 !")

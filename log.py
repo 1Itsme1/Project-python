@@ -23,7 +23,7 @@ def account():
         rows = list(reader)
     
     print("--------------------------------------------")
-    log = input("Bonjour, avez-vous un compte ? Oui/Non : ").strip().lower()
+    log = input("Bonjour, avez-vous un compte ? Oui / Non : ").strip().lower()
     print("--------------------------------------------")
     
     if log == "oui":
