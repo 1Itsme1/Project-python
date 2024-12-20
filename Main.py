@@ -2,9 +2,13 @@ import sys
 from hashlib import sha256
 from getpass import getpass
 import log 
+import requests
+import hashlib 
+import csv 
 
 def afficher_menu():
     print("\n=== MENU PRINCIPAL ===")
+    print("0. Compte")
     print("1. Afficher le stock")
     print("2. Filtrer le stock")
     print("3. Rechercher un produit")
@@ -29,6 +33,12 @@ def afficher_tri_produit():
     print("5. Trier le stock par quantité (ordre croissant)")
     print("6. Trier le stock par quantité (ordre décroissant)")
     print("7. Retour au menu principal")
+    print("====================")
+
+def afficher_compte(): 
+    print("\n=== GESTION COMPTE ===")
+    print ("1. Changer de mot de passe")
+    print ("2. Supprimer mon compte /!\\")
     print("====================")
 
 #===========================================================================================================
@@ -63,9 +73,9 @@ def lire_stock_global(fichier, utilisateur_clair):
     
     return assignations
 
-
+#===========================================================================================================
 def sauvegarder_stock(fichier_produit, assignations):
-    # Lire toutes les lignes existantes
+    
     lignes_anciennes = {}
     try:
         with open(fichier_produit, "r", encoding="utf-8") as f:
@@ -81,20 +91,17 @@ def sauvegarder_stock(fichier_produit, assignations):
                         "stock": int(quantite)
                     })
     except FileNotFoundError:
-        # Le fichier n'existe pas encore, aucun problème
         pass
 
-    # Mettre à jour les données pour l'utilisateur actuel
     for utilisateur, produits in assignations.items():
         lignes_anciennes[utilisateur] = produits
 
-    # Réécrire tout le fichier avec les données combinées
     with open(fichier_produit, "w", encoding="utf-8") as f:
         for utilisateur, produits in lignes_anciennes.items():
             for produit in produits:
                 f.write(f"{utilisateur},{produit['nom']},{produit['prix']},{produit['stock']}\n")
 
-
+#===========================================================================================================
 def afficher_stock(assignations, utilisateur_hash):
     if utilisateur_hash in assignations:
         produits = assignations[utilisateur_hash]
@@ -107,17 +114,17 @@ def afficher_stock(assignations, utilisateur_hash):
             print("Votre stock est vide. Vous pouvez commencer à ajouter des produits !")
     else:
         print("Utilisateur non trouvé.")
-
+#===========================================================================================================
 
 def tri_rapide(stock, key, reverse=False):
     return sorted(stock, key=lambda x: x[key], reverse=reverse)
 
-
+#===========================================================================================================
 def rechercher_produit_par_nom(stock, nom_recherche):
     resultat = [produit for produit in stock if nom_recherche.lower() in produit["nom"].lower()]
     return resultat
 
-
+#===========================================================================================================
 def ajouter_produit(assignations, utilisateur):
     nom = input("Entrez le nom du produit : ")
     try:
@@ -132,7 +139,7 @@ def ajouter_produit(assignations, utilisateur):
     print(f"Produit '{nom}' ajouté avec succès !")
     sauvegarder_stock(fichier_produit, assignations)
 
-
+#===========================================================================================================
 def supprimer_produit(assignations, utilisateur):
     if utilisateur not in assignations or not assignations[utilisateur]:
         print("Votre stock est vide. Aucun produit à supprimer.")
@@ -142,8 +149,8 @@ def supprimer_produit(assignations, utilisateur):
     produits = assignations[utilisateur]
     produit_supprime = False
 
-    # Supprimer le produit en vérifiant le nom
-    for produit in produits[:]:  # Parcourir une copie de la liste
+    
+    for produit in produits[:]:  
         if produit["nom"].lower() == nom.lower():
             produits.remove(produit)
             produit_supprime = True
@@ -153,8 +160,8 @@ def supprimer_produit(assignations, utilisateur):
     if not produit_supprime:
         print(f"Aucun produit trouvé avec le nom '{nom}'.")
     else:
-        sauvegarder_stock(fichier_produit, assignations)  # Sauvegarder les modifications pour tous
-
+        sauvegarder_stock(fichier_produit, assignations)  
+#===========================================================================================================
 def modifier_produit(assignations, utilisateur):
     if utilisateur not in assignations or not assignations[utilisateur]:
         print("Votre stock est vide. Aucun produit à modifier.")
@@ -191,35 +198,73 @@ def modifier_produit(assignations, utilisateur):
             return
     
     print(f"Aucun produit trouvé avec le nom '{nom}'.")
-
+#===========================================================================================================
 def initialiser_stock_utilisateur(assignations, utilisateur):
     if utilisateur not in assignations:
         assignations[utilisateur] = []
+#===========================================================================================================
+def verifier_password(password):
+    sha1_hash = hashlib.sha1(password.encode('utf-8')).hexdigest().upper()
+    prefix = sha1_hash[:5]  
+    suffix = sha1_hash[5:]  
+
+    url = f"https://api.pwnedpasswords.com/range/{prefix}"
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        raise RuntimeError(f"Erreur de connexion à l'API : {response.status_code}")
+
+    found = False
+    hashes = (line.split(':') for line in response.text.splitlines())
+    for returned_suffix, count in hashes:
+        if returned_suffix == suffix:
+            print(f"Mot de passe compromis ! Trouvé {count} fois dans les fuites. \nChangez immédiatement de mot de passe dans la rubrique 'Compte' en appuyant sur '0'")
+            found = True
+    if not found:
+        print("Mot de passe sécurisé (non trouvé dans les fuites).")
+        
+#===========================================================================================================
 
 #===========================================================================================================
 
 if __name__ == "__main__":
-    fichier_produit = "assignations_stock.csv"
+    fichier_produit = "./Data/assignations_stock.csv"
     fichier_compromis = 'C:/Users/rmeney/Documents/GitHub/rockyou-sha256.txt'
     print("Connexion au système requise.")
     check, user = log.account()
+    
 
     if not check:
         print("Accès refusé. Vous devez vous connecter pour continuer.")
-        sys.exit()  
+        sys.exit()
+    
     utilisateur_hash = sha256(user.strip().encode('utf-8')).hexdigest()
-    print(f"Bienvenue {user} ! Vous êtes connecté.")  
+    email = user
+    name_avant_arobase = email.split('@')[0]
+    print(f"Bienvenue {name_avant_arobase} ! Vous êtes connecté.")  
 
     assignations = lire_stock_global(fichier_produit, user)
 
 
     # Menu principal
+
     while True:
         afficher_menu()
-        choix = input("Choisissez une option (1-5) : ")
+        choix = input("Choisissez une option (0-5) : ")
+
+        #if choix == "0":
+            #afficher_compte()
+            #choix_compte = input("Choisissez une option (1-2) : ")
+            #if choix_compte == "1":
+                #changer_mot_de_passe(fichier_produit, user)
+            #elif choix_compte == "2":
+                #print("Option de suppression de compte encore non implémentée.")
+            #else:
+                #print("Option invalide.")
 
         if choix == "1":
                 afficher_stock(assignations, utilisateur_hash)
+              
         elif choix == "2": 
             produits = assignations.get(utilisateur_hash, [])
             if produits:
