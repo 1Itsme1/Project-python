@@ -40,6 +40,7 @@ def afficher_compte():
     print("\n=== GESTION COMPTE ===")
     print ("1. Changer de mot de passe")
     print ("2. Supprimer mon compte /!\\")
+    print("3. Retour au menu principal")
     print("====================")
 
 #===========================================================================================================
@@ -283,42 +284,60 @@ def changer_mot_de_passe(fichier_usernames_passwords, utilisateur_hash):
     print("Mot de passe mis à jour avec succès !")
 
 #===========================================================================================================
-def suppression_compte(fichier_usernames_passwords, utilisateur_hash, verifier_mot_de_passe):
-    
+def suppression_compte(fichier_usernames_passwords, fichier_produit, utilisateur_hash, verifier_mot_de_passe):
+
+    # Lire le contenu du fichier des utilisateurs
     with open(fichier_usernames_passwords, 'r', encoding='utf-8') as csvfilepass:
         reader = csv.reader(csvfilepass, delimiter=',')
-        header = next(reader, None)  
-        utilisateurs = list(reader) 
+        header_users = next(reader, None)  
+        utilisateurs = list(reader)
 
-    
+    # Trouver l'utilisateur à supprimer
     utilisateur_data = next((row for row in utilisateurs if row[0] == utilisateur_hash), None)
     if not utilisateur_data:
         print("Utilisateur introuvable.")
         return
 
-    
+    # Demander confirmation
     confirmation = input("Êtes-vous sûr de vouloir supprimer votre compte ? Tapez 'OUI' pour confirmer : ").strip().upper()
     if confirmation != "OUI":
         print("Suppression annulée. Retour au menu principal.")
         return
 
-   
-    mot_de_passe = input("Entrez votre mot de passe pour confirmer : ").strip()
+    # Vérifier le mot de passe
+    mot_de_passe = getpass("Entrez votre mot de passe pour confirmer : ").strip()
     if not verifier_mot_de_passe(utilisateur_data[1], utilisateur_data[2], mot_de_passe):
         print("Mot de passe incorrect. Suppression annulée.")
         return
 
-  
+    # Supprimer l'utilisateur des utilisateurs
     utilisateurs_sans_compte = [row for row in utilisateurs if row[0] != utilisateur_hash]
 
-    
+    # Réécrire le fichier des utilisateurs
     with open(fichier_usernames_passwords, 'w', encoding='utf-8', newline='') as csvfilepass:
         writer = csv.writer(csvfilepass, delimiter=',')
-        if header:
-            writer.writerow(header) 
+        if header_users:
+            writer.writerow(header_users)  
         writer.writerows(utilisateurs_sans_compte)  
 
-    print("Votre compte a été supprimé avec succès.") 
+    print("Votre compte et les donées assignées ont été supprimés avec succès.")
+
+    # Lire le fichier des produits
+    with open(fichier_produit, 'r', encoding='utf-8') as csvfileprod:
+        reader = csv.reader(csvfileprod, delimiter=',')
+        header_products = next(reader, None)  
+        produits = list(reader)
+
+    produits_restants = [row for row in produits if row[0] != utilisateur_hash]
+
+    
+    with open(fichier_produit, 'w', encoding='utf-8', newline='') as csvfileprod:
+        writer = csv.writer(csvfileprod, delimiter=',')
+        if header_products:
+            writer.writerow(header_products)  
+        writer.writerows(produits_restants)  
+
+    
 
 def verifier_mot_de_passe(salt, mot_de_passe_hash, mot_de_passe):
     import hashlib
@@ -335,7 +354,7 @@ if __name__ == "__main__":
     check, user = log.account()
     
     if not check:
-        print("Accès refusé. Si vous n'avez pas de compte créez en un ! \nSinon l'email ou le mot de passe est incorrect !")
+        print("Accès refusé. \nSi vous n'avez pas de compte créez en un ! \nSinon l'email ou le mot de passe est incorrect !")
         sys.exit()
     
     utilisateur_hash = sha256(user.strip().encode('utf-8')).hexdigest()
@@ -353,14 +372,18 @@ if __name__ == "__main__":
         choix = input("Choisissez une option (0-5) : ")
 
         if choix == "0":
-            afficher_compte()
-            choix_compte = input("Choisissez une option (1-2) : ")
-            if choix_compte == "1":
-                changer_mot_de_passe(fichier_usernames_passwords, utilisateur_hash)
-            elif choix_compte == "2":
-                suppression_compte(fichier_usernames_passwords, utilisateur_hash)
-            else:
-                print("Option invalide. Veuillez choisir une options entre 1 et 2.")
+            while True:
+                afficher_compte()
+                choix_compte = input("Choisissez une option (1-3) : ")
+                if choix_compte == "1":
+                    changer_mot_de_passe(fichier_usernames_passwords, utilisateur_hash)
+                elif choix_compte == "2":
+                    suppression_compte(fichier_usernames_passwords, fichier_produit, utilisateur_hash, verifier_mot_de_passe)
+                    sys.exit() 
+                elif choix_compte == "3":
+                    break
+                else:
+                    print("Option invalide. Veuillez choisir une options entre 1 et 2.")
 
         elif choix == "1":
                 afficher_stock(assignations, utilisateur_hash)

@@ -49,6 +49,7 @@ def account():
        
         user = input("Choisissez un E-mail utilisateur: ").strip()
         password = getpass("Choisissez un mot de passe: ").strip()
+        verifier_password(password)
 
        
         for row in rows[1:]:  
