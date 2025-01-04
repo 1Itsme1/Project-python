@@ -5,6 +5,7 @@ import os
 import base64
 import Main
 from Main import verifier_password
+from Main import enregistrer_historique_requete
 
 def generer_salt():
     """Génère un sel aléatoire sous forme de chaîne base64."""
@@ -30,7 +31,7 @@ def account():
        
         user = input("E-mail utilisateur: ").strip()
         password = getpass("Mot de passe: ").strip()
-        verifier_password(password)
+        verifier_password(password,user)
         hash_user = sha256(user.encode('utf-8')).hexdigest()
 
         for row in rows[1:]:  
@@ -46,11 +47,10 @@ def account():
         return False, None
 
     elif log == "non":
-       
         user = input("Choisissez un E-mail utilisateur: ").strip()
         password = getpass("Choisissez un mot de passe: ").strip()
-        verifier_password(password)
-
+        verifier_password(password,user)
+        
        
         for row in rows[1:]:  
             if len(row) < 3:  
@@ -70,6 +70,8 @@ def account():
             writer = csv.writer(csvfile)
             writer.writerow([hash_user, salt, hash_password])
             print(f"Votre compte a été créé avec succès. Bienvenue {user} !")
+            enregistrer_historique_requete("./Data/historique_requetes.csv", hash_user, "Création du compte réussi")
+            
         return True, user
     
     else:

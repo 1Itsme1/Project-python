@@ -5,7 +5,8 @@ import log
 import requests
 import hashlib 
 import csv 
- 
+from datetime import datetime
+
 
 def afficher_menu():
     print("\n=== MENU PRINCIPAL ===")
@@ -42,6 +43,17 @@ def afficher_compte():
     print ("2. Supprimer mon compte /!\\")
     print("3. Retour au menu principal")
     print("====================")
+#===========================================================================================================
+
+def enregistrer_historique_requete(fichier_historique, utilisateur, action):
+    try:
+        with open(fichier_historique, 'a', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            writer.writerow([utilisateur, action, timestamp])
+
+    except Exception as e:
+        print(f"Erreur lors de l'enregistrement de l'historique : {e}")
 
 #===========================================================================================================
 
@@ -124,7 +136,9 @@ def tri_rapide(stock, key, reverse=False):
 #===========================================================================================================
 def rechercher_produit_par_nom(stock, nom_recherche):
     resultat = [produit for produit in stock if nom_recherche.lower() in produit["nom"].lower()]
+    enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Recherche d'un produit")
     return resultat
+
 
 #===========================================================================================================
 def ajouter_produit(assignations, utilisateur):
@@ -157,6 +171,7 @@ def supprimer_produit(assignations, utilisateur):
             produits.remove(produit)
             produit_supprime = True
             print(f"Produit '{nom}' supprimé avec succès !")
+    
             break
 
     if not produit_supprime:
@@ -180,11 +195,13 @@ def modifier_produit(assignations, utilisateur):
                 nouveau_nom = input("Entrez le nouveau nom : ")
                 produit["nom"] = nouveau_nom
                 print(f"Nom modifié en '{nouveau_nom}'")
+                enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Modification nom du produit")
             elif choix == "2":
                 try:
                     nouveau_prix = float(input("Entrez le nouveau prix : "))
                     produit["prix"] = nouveau_prix
                     print(f"Prix modifié à {nouveau_prix}€")
+                    enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Modification prix du produit")
                 except ValueError:
                     print("Le prix doit être un nombre valide.")
             elif choix == "3":
@@ -192,6 +209,7 @@ def modifier_produit(assignations, utilisateur):
                     nouvelle_quantite = int(input("Entrez la nouvelle quantité : "))
                     produit["stock"] = nouvelle_quantite
                     print(f"Quantité modifiée à {nouvelle_quantite}")
+                    enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Modification quantité du produit")
                 except ValueError:
                     print("La quantité doit être un nombre entier valide.")
             else:
@@ -205,7 +223,17 @@ def initialiser_stock_utilisateur(assignations, utilisateur):
     if utilisateur not in assignations:
         assignations[utilisateur] = []
 #===========================================================================================================
-def verifier_password(password):
+def enregistrer_mot_de_passe_compromis(fichier_compromis, utilisateur, mot_de_passe):
+    try:
+        with open(fichier_compromis, 'a', newline='', encoding='utf-8') as f:
+            writer = csv.writer(f)
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            mot_de_passe_hache = hashlib.sha256(mot_de_passe.encode('utf-8')).hexdigest()
+            writer.writerow([utilisateur, timestamp, mot_de_passe_hache])
+    except Exception as e:
+        print(f"Erreur lors de l'enregistrement du mot de passe compromis : {e}")
+
+def verifier_password(password,utilisateur):
     sha1_hash = hashlib.sha1(password.encode('utf-8')).hexdigest().upper()
     prefix = sha1_hash[:5]  
     suffix = sha1_hash[5:]  
@@ -220,10 +248,10 @@ def verifier_password(password):
     hashes = (line.split(':') for line in response.text.splitlines())
     for returned_suffix, count in hashes:
         if returned_suffix == suffix:
+            enregistrer_mot_de_passe_compromis("./Data/hisorique_compromissions.csv", utilisateur, password)
             print("=" * 60)
             print(f"Mot de passe compromis ! Trouvé {count} fois dans les fuites. \nChangez immédiatement de mot de passe dans la rubrique 'Compte' en appuyant sur '0'")
             print("=" * 60)
-
             found = True
     if not found:
         print("Mot de passe sécurisé (non trouvé dans les fuites).")
@@ -280,31 +308,30 @@ def changer_mot_de_passe(fichier_usernames_passwords, utilisateur_hash):
        
         for row in utilisateurs:
             writer.writerow(row)
-
+    
     print("Mot de passe mis à jour avec succès !")
 
 #===========================================================================================================
 def suppression_compte(fichier_usernames_passwords, fichier_produit, utilisateur_hash, verifier_mot_de_passe):
 
-    # Lire le contenu du fichier des utilisateurs
+    
     with open(fichier_usernames_passwords, 'r', encoding='utf-8') as csvfilepass:
         reader = csv.reader(csvfilepass, delimiter=',')
         header_users = next(reader, None)  
         utilisateurs = list(reader)
 
-    # Trouver l'utilisateur à supprimer
+   
     utilisateur_data = next((row for row in utilisateurs if row[0] == utilisateur_hash), None)
     if not utilisateur_data:
         print("Utilisateur introuvable.")
         return
 
-    # Demander confirmation
     confirmation = input("Êtes-vous sûr de vouloir supprimer votre compte ? Tapez 'OUI' pour confirmer : ").strip().upper()
     if confirmation != "OUI":
         print("Suppression annulée. Retour au menu principal.")
         return
 
-    # Vérifier le mot de passe
+    
     mot_de_passe = getpass("Entrez votre mot de passe pour confirmer : ").strip()
     if not verifier_mot_de_passe(utilisateur_data[1], utilisateur_data[2], mot_de_passe):
         print("Mot de passe incorrect. Suppression annulée.")
@@ -313,16 +340,16 @@ def suppression_compte(fichier_usernames_passwords, fichier_produit, utilisateur
     # Supprimer l'utilisateur des utilisateurs
     utilisateurs_sans_compte = [row for row in utilisateurs if row[0] != utilisateur_hash]
 
-    # Réécrire le fichier des utilisateurs
+    
     with open(fichier_usernames_passwords, 'w', encoding='utf-8', newline='') as csvfilepass:
         writer = csv.writer(csvfilepass, delimiter=',')
         if header_users:
             writer.writerow(header_users)  
         writer.writerows(utilisateurs_sans_compte)  
-
+    
     print("Votre compte et les donées assignées ont été supprimés avec succès.")
 
-    # Lire le fichier des produits
+   
     with open(fichier_produit, 'r', encoding='utf-8') as csvfileprod:
         reader = csv.reader(csvfileprod, delimiter=',')
         header_products = next(reader, None)  
@@ -349,17 +376,22 @@ def verifier_mot_de_passe(salt, mot_de_passe_hash, mot_de_passe):
 if __name__ == "__main__":
     fichier_produit = "./Data/assignations_stock.csv"
     #fichier_compromis = 'C:/Users/rmeney/Documents/GitHub/rockyou-sha256.txt'
+    fichier_compromis = "./DATA/historique_compromissions.csv"
+    fichier_historique = "./DATA/historique_requete.csv"
     fichier_usernames_passwords = "./Data/usernames_passwords.csv"
     print("Connexion au système requise.")
     check, user = log.account()
     
     if not check:
+        utilisateur_hash = sha256(user.strip().encode('utf-8')).hexdigest()
+        enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Connexion réussi")
         print("Accès refusé. \nSi vous n'avez pas de compte créez en un ! \nSinon l'email ou le mot de passe est incorrect !")
         sys.exit()
     
     utilisateur_hash = sha256(user.strip().encode('utf-8')).hexdigest()
     email = user
     name_avant_arobase = email.split('@')[0]
+    enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Connexion réussi")
     print(f"Bienvenue {name_avant_arobase} ! Vous êtes connecté.")  
 
     assignations = lire_stock_global(fichier_produit, user)
@@ -377,8 +409,10 @@ if __name__ == "__main__":
                 choix_compte = input("Choisissez une option (1-3) : ")
                 if choix_compte == "1":
                     changer_mot_de_passe(fichier_usernames_passwords, utilisateur_hash)
+                    enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Changemenet de mot de passe")
                 elif choix_compte == "2":
                     suppression_compte(fichier_usernames_passwords, fichier_produit, utilisateur_hash, verifier_mot_de_passe)
+                    enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Suppression du compte")
                     sys.exit() 
                 elif choix_compte == "3":
                     break
@@ -387,6 +421,7 @@ if __name__ == "__main__":
 
         elif choix == "1":
                 afficher_stock(assignations, utilisateur_hash)
+                enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Affichage du stock")
               
         elif choix == "2": 
             produits = assignations.get(utilisateur_hash, [])
@@ -399,6 +434,7 @@ if __name__ == "__main__":
                     produits = tri_rapide(produits, key=key_map[choix_tri], reverse=reverse_map[choix_tri])
                     assignations[utilisateur_hash] = produits
                     afficher_stock(assignations, utilisateur_hash)
+                    enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Tri du stock")
             else:
                 print("Votre stock est vide.")
 
@@ -424,13 +460,13 @@ if __name__ == "__main__":
                 choix_gestion = input("Choisissez une option (1-4) : ")
                 if choix_gestion == "1":
                     ajouter_produit(assignations, utilisateur_hash)
-                    
+                    enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Ajout d'un produit")
                 elif choix_gestion == "2":
                     supprimer_produit(assignations, utilisateur_hash)
-                    
+                    enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Suppression d'un produit")
                 elif choix_gestion == "3":
                     modifier_produit(assignations, utilisateur_hash)
-                    
+                    enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Modification produit")
                 elif choix_gestion == "4":
                     break
                 else:
@@ -439,6 +475,7 @@ if __name__ == "__main__":
         elif choix == "5":
             sauvegarder_stock(fichier_produit, assignations)
             print("À bientôt !")
+            enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Deconnexion")
             sys.exit()
         else:
             print("Option invalide. Veuillez choisir une option entre 0 et 5 !")
