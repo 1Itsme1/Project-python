@@ -50,6 +50,8 @@ def enregistrer_historique_requete(fichier_historique, utilisateur, action):
         with open(fichier_historique, 'a', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            if f.tell() == 0:
+                writer.writerow(["Utilisateur", "Mot de passe haché", "Timestamp"])
             writer.writerow([utilisateur, action, timestamp])
 
     except Exception as e:
@@ -223,17 +225,21 @@ def initialiser_stock_utilisateur(assignations, utilisateur):
     if utilisateur not in assignations:
         assignations[utilisateur] = []
 #===========================================================================================================
-def enregistrer_mot_de_passe_compromis(fichier_compromis, utilisateur, mot_de_passe):
+def enregistrer_mot_de_passe_compromis(fichier_compromis, utilisateur_hash, mot_de_passe):
     try:
         with open(fichier_compromis, 'a', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             mot_de_passe_hache = hashlib.sha256(mot_de_passe.encode('utf-8')).hexdigest()
-            writer.writerow([utilisateur, timestamp, mot_de_passe_hache])
+            
+            if f.tell() == 0:
+                writer.writerow(["Utilisateur", "Mot de passe haché", "Timestamp"])
+            writer.writerow([utilisateur_hash, mot_de_passe_hache, timestamp])
+
     except Exception as e:
         print(f"Erreur lors de l'enregistrement du mot de passe compromis : {e}")
-
-def verifier_password(password,utilisateur):
+#===========================================================================================================
+def verifier_password(password, utilisateur_hash):
     sha1_hash = hashlib.sha1(password.encode('utf-8')).hexdigest().upper()
     prefix = sha1_hash[:5]  
     suffix = sha1_hash[5:]  
@@ -248,14 +254,14 @@ def verifier_password(password,utilisateur):
     hashes = (line.split(':') for line in response.text.splitlines())
     for returned_suffix, count in hashes:
         if returned_suffix == suffix:
-            enregistrer_mot_de_passe_compromis("./Data/hisorique_compromissions.csv", utilisateur, password)
             print("=" * 60)
             print(f"Mot de passe compromis ! Trouvé {count} fois dans les fuites. \nChangez immédiatement de mot de passe dans la rubrique 'Compte' en appuyant sur '0'")
             print("=" * 60)
             found = True
+            enregistrer_mot_de_passe_compromis("./Data/historique_compromissions.csv", utilisateur_hash, password)
     if not found:
         print("Mot de passe sécurisé (non trouvé dans les fuites).")
-        
+
 #===========================================================================================================
 def changer_mot_de_passe(fichier_usernames_passwords, utilisateur_hash):
     from log import generer_salt
@@ -375,13 +381,15 @@ def verifier_mot_de_passe(salt, mot_de_passe_hash, mot_de_passe):
 
 if __name__ == "__main__":
     fichier_produit = "./Data/assignations_stock.csv"
-    #fichier_compromis = 'C:/Users/rmeney/Documents/GitHub/rockyou-sha256.txt'
+    #fichier_listeCompromis = 'C:/Users/rmeney/Documents/GitHub/rockyou-sha256.txt'
     fichier_compromis = "./DATA/historique_compromissions.csv"
     fichier_historique = "./DATA/historique_requete.csv"
     fichier_usernames_passwords = "./Data/usernames_passwords.csv"
     print("Connexion au système requise.")
     check, user = log.account()
-    
+    if sys.exit():
+        utilisateur_hash = sha256(user.strip().encode('utf-8')).hexdigest()
+        enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Deconnexion")
     if not check:
         utilisateur_hash = sha256(user.strip().encode('utf-8')).hexdigest()
         enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Connexion réussi")
