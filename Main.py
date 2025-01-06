@@ -239,6 +239,14 @@ def enregistrer_mot_de_passe_compromis(fichier_compromis, utilisateur_hash, mot_
     except Exception as e:
         print(f"Erreur lors de l'enregistrement du mot de passe compromis : {e}")
 #===========================================================================================================
+"""
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+def envoyer_email_notification():
+"""
+#===========================================================================================================
 def verifier_password(password, utilisateur_hash):
     sha1_hash = hashlib.sha1(password.encode('utf-8')).hexdigest().upper()
     prefix = sha1_hash[:5]  
