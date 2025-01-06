@@ -398,7 +398,7 @@ if __name__ == "__main__":
     if sys.exit():
         utilisateur_hash = sha256(user.strip().encode('utf-8')).hexdigest()
         enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Deconnexion")
-    if not check:
+    if not check: 
         utilisateur_hash = sha256(user.strip().encode('utf-8')).hexdigest()
         enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Connexion réussi")
         print("Accès refusé. \nSi vous n'avez pas de compte créez en un ! \nSinon l'email ou le mot de passe est incorrect !")
