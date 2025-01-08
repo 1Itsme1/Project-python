@@ -3,7 +3,7 @@ from hashlib import sha256
 import os
 import base64
 from Main import verifier_password
-from Main import enregistrer_historique_requete
+from Main import lire_stock_global
 
 def generer_salt():
     return base64.b64encode(os.urandom(16)).decode('utf-8')

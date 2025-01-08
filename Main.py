@@ -6,7 +6,9 @@ import requests
 import hashlib 
 import csv 
 from datetime import datetime
-
+from tkinter import *
+from tkinter import ttk
+import tkinter.messagebox as MessageBox
 
 def afficher_menu():
     print("\n=== MENU PRINCIPAL ===")
@@ -58,7 +60,6 @@ def enregistrer_historique_requete(fichier_historique, utilisateur, action):
         print(f"Erreur lors de l'enregistrement de l'historique : {e}")
 
 #===========================================================================================================
-
 def lire_stock_global(fichier, user):
     assignations = {}
     utilisateur_hash = sha256(user.strip().encode('utf-8')).hexdigest()
@@ -248,142 +249,213 @@ def envoyer_email_notification():
 """
 #===========================================================================================================
 def verifier_password(password, utilisateur_hash):
-    sha1_hash = hashlib.sha1(password.encode('utf-8')).hexdigest().upper()
-    prefix = sha1_hash[:5]  
-    suffix = sha1_hash[5:]  
+    """
+    Vérifie si le mot de passe est compromis via l'API PwnedPasswords et affiche les résultats dans une interface graphique.
+    """
+    try:
+        # Calcul du hash SHA-1 du mot de passe
+        sha1_hash = hashlib.sha1(password.encode('utf-8')).hexdigest().upper()
+        prefix = sha1_hash[:5]  
+        suffix = sha1_hash[5:]  
 
-    url = f"https://api.pwnedpasswords.com/range/{prefix}"
-    response = requests.get(url)
+        # Appel de l'API PwnedPasswords
+        url = f"https://api.pwnedpasswords.com/range/{prefix}"
+        response = requests.get(url)
 
-    if response.status_code != 200:
-        raise RuntimeError(f"Erreur de connexion à l'API : {response.status_code}")
+        # Gestion des erreurs de connexion
+        if response.status_code != 200:
+            raise RuntimeError(f"Erreur de connexion à l'API : {response.status_code}")
 
-    found = False
-    hashes = (line.split(':') for line in response.text.splitlines())
-    for returned_suffix, count in hashes:
-        if returned_suffix == suffix:
-            print("=" * 60)
-            print(f"Mot de passe compromis ! Trouvé {count} fois dans les fuites. \nChangez immédiatement de mot de passe dans la rubrique 'Compte' en appuyant sur '0'")
-            print("=" * 60)
-            found = True
-            enregistrer_mot_de_passe_compromis("./Data/historique_compromissions.csv", utilisateur_hash, password)
-    if not found:
-        print("Mot de passe sécurisé (non trouvé dans les fuites).")
+        # Recherche dans les résultats de l'API
+        found = False
+        hashes = (line.split(':') for line in response.text.splitlines())
+        for returned_suffix, count in hashes:
+            if returned_suffix == suffix:
+                MessageBox.showwarning(
+                    "Mot de passe compromis",
+                    f"Votre mot de passe a été trouvé {count} fois dans des fuites !\n"
+                    "Nous vous recommandons de le changer rapidement dans la rubrique Compte."
+                )
+                found = True
+                enregistrer_mot_de_passe_compromis("./Data/historique_compromissions.csv", utilisateur_hash, password)
+                break
+
+        if not found:
+            MessageBox.showinfo("Mot de passe sécurisé", "Votre mot de passe est bien sécurisé")
+    
+    except RuntimeError as e:
+        MessageBox.showerror("Erreur", f"Une erreur s'est produite : {e}")
+    except Exception as e:
+        MessageBox.showerror("Erreur", f"Une erreur inattendue s'est produite : {e}")
 
 #===========================================================================================================
-def changer_mot_de_passe(fichier_usernames_passwords, utilisateur_hash):
-    from log import generer_salt
-    
+import csv
+import hashlib
+import tkinter as tk
+from tkinter import messagebox
+import base64
+import os
+def generer_salt():
+    return base64.b64encode(os.urandom(16)).decode('utf-8')
+
+def changer_mot_de_passe_graphique(fichier_usernames_passwords,utilisateur_hash, fenetre):
+    # Ouvrir le fichier des utilisateurs pour rechercher les informations de l'utilisateur
     with open(fichier_usernames_passwords, 'r', encoding='utf-8') as csvfilepass:
         reader = csv.reader(csvfilepass, delimiter=',')
-        next(reader, None)
+        next(reader, None)  # Passer l'en-tête
         utilisateurs = list(reader)
 
     utilisateur_data = None
     for row in utilisateurs:
         if row[0] == utilisateur_hash:  
             utilisateur_data = row
-            print(f"Utilisateur trouvé : {utilisateur_data}")
             break
 
     if not utilisateur_data:
-        print("Utilisateur introuvable.")
+        messagebox.showerror("Erreur", "Utilisateur introuvable.")
         return
 
-   
-    while True:
-        nouveau_mot_de_passe = input("Entrez un nouveau mot de passe : ")
-        confirmer_mot_de_passe = input("Confirmez le nouveau mot de passe : ")
+    # Fenêtre pour demander un nouveau mot de passe
+    def valider_nouveau_mot_de_passe():
+        # Récupérer les mots de passe saisis par l'utilisateur
+        nouveau_mot_de_passe = entry_nouveau_mdp.get()
+        confirmer_mot_de_passe = entry_confirmer_mdp.get()
 
+        # Validation des mots de passe
         if nouveau_mot_de_passe != confirmer_mot_de_passe:
-            print("Les mots de passe ne correspondent pas. Essayez à nouveau.")
-            continue
+            messagebox.showwarning("Attention", "Les mots de passe ne correspondent pas.")
+            return
 
         if len(nouveau_mot_de_passe) < 8 or not any(c.isdigit() for c in nouveau_mot_de_passe) or not any(c.isupper() for c in nouveau_mot_de_passe):
-            print("Le mot de passe doit comporter au moins 8 caractères, inclure un chiffre et une majuscule.")
-            continue
+            messagebox.showwarning("Attention", "Le mot de passe doit comporter au moins 8 caractères, inclure un chiffre et une majuscule.")
+            return
 
-        break
+        # Hashage du mot de passe avec un nouveau salt
+        nouveau_salt = generer_salt()
+        hash_nouveau_mot_de_passe = hashlib.sha256((nouveau_salt + nouveau_mot_de_passe).encode('utf-8')).hexdigest()
 
-    
-    nouveau_salt = generer_salt() 
-    hash_nouveau_mot_de_passe = hashlib.sha256((nouveau_salt + nouveau_mot_de_passe).encode('utf-8')).hexdigest()
-    
-    utilisateur_data[1] = nouveau_salt
-    utilisateur_data[2] = hash_nouveau_mot_de_passe
+        # Mettre à jour les données de l'utilisateur
+        utilisateur_data[1] = nouveau_salt
+        utilisateur_data[2] = hash_nouveau_mot_de_passe
 
-    
-    with open(fichier_usernames_passwords, 'w', encoding='utf-8', newline='') as csvfilepass:
-        writer = csv.writer(csvfilepass, delimiter=',')
-        
-        
-        writer.writerow(["Utilisateur", "Salt", "Mot de passe"])
+        # Sauvegarder les modifications dans le fichier
+        with open(fichier_usernames_passwords, 'w', encoding='utf-8', newline='') as csvfilepass:
+            writer = csv.writer(csvfilepass, delimiter=',')
+            writer.writerow(["Utilisateur", "Salt", "Mot de passe"])  # Réécrire l'en-tête
 
-       
-        for row in utilisateurs:
-            writer.writerow(row)
-    
-    print("Mot de passe mis à jour avec succès !")
+            for row in utilisateurs:
+                writer.writerow(row)
+
+        # Afficher un message de confirmation et fermer la fenêtre de changement de mot de passe
+        messagebox.showinfo("Succès", "Mot de passe mis à jour avec succès !")
+        fenetre_changement_mdp.destroy()
+
+    # Fenêtre pour changer le mot de passe (Toplevel)
+    fenetre_changement_mdp = tk.Toplevel(fenetre)
+    fenetre_changement_mdp.title("Changer le mot de passe")
+    fenetre_changement_mdp.geometry("400x300")
+
+    # Widgets pour saisir le mot de passe
+    label_nouveau_mdp = tk.Label(fenetre_changement_mdp, text="Nouveau mot de passe")
+    label_nouveau_mdp.pack(pady=10)
+
+    entry_nouveau_mdp = tk.Entry(fenetre_changement_mdp, show="*")
+    entry_nouveau_mdp.pack(pady=5)
+
+    label_confirmer_mdp = tk.Label(fenetre_changement_mdp, text="Confirmer le mot de passe")
+    label_confirmer_mdp.pack(pady=10)
+
+    entry_confirmer_mdp = tk.Entry(fenetre_changement_mdp, show="*")
+    entry_confirmer_mdp.pack(pady=5)
+
+    # Bouton pour valider le changement de mot de passe
+    bouton_valider = tk.Button(fenetre_changement_mdp, text="Valider", command=valider_nouveau_mot_de_passe)
+    bouton_valider.pack(pady=20)
+
 
 #===========================================================================================================
-def suppression_compte(fichier_usernames_passwords, fichier_produit, utilisateur_hash, verifier_mot_de_passe):
+def suppression_compte(fichier_usernames_passwords, fichier_produit, utilisateur_hash, verifier_mot_de_passe, fenetre):
+    # Lecture des utilisateurs depuis le fichier
+    with open(fichier_usernames_passwords, 'r', encoding='utf-8') as csvfilepass:
+        reader = csv.reader(csvfilepass, delimiter=',')
+        header_users = next(reader, None)
+        utilisateurs = list(reader)
 
+    utilisateur_data = next((row for row in utilisateurs if row[0] == utilisateur_hash), None)
+    if not utilisateur_data:
+        messagebox.showerror("Erreur", "Utilisateur introuvable.")
+        return
+
+    # Demander la confirmation de suppression avec un messagebox
+    confirmation = messagebox.askyesno("Confirmation", "Êtes-vous sûr de vouloir supprimer votre compte ?")
+    if not confirmation:
+        messagebox.showinfo("Annulation", "Suppression annulée.")
+        return
+
+    # Demander le mot de passe à l'utilisateur via une fenêtre modale
+    def valider_mot_de_passe():
+        mot_de_passe = mot_de_passe_entry.get()
+        if not verifier_mot_de_passe(utilisateur_data[1], utilisateur_data[2], mot_de_passe):
+            messagebox.showerror("Erreur", "Mot de passe incorrect.")
+            return
+        else:
+            supprimer_utilisateur(utilisateur_data)
+            suppression_window.destroy()
+
+    # Créer une nouvelle fenêtre pour saisir le mot de passe
+    suppression_window = tk.Toplevel(fenetre)
+    suppression_window.title("Vérification du mot de passe")
+
+    label_mdp = tk.Label(suppression_window, text="Entrez votre mot de passe pour confirmer :")
+    label_mdp.pack(pady=10)
+
+    mot_de_passe_entry = tk.Entry(suppression_window, show="*")  # Masquer le mot de passe
+    mot_de_passe_entry.pack(pady=10)
+
+    bouton_valider_mdp = tk.Button(suppression_window, text="Valider", command=valider_mot_de_passe)
+    bouton_valider_mdp.pack(pady=10)
+
+    suppression_window.mainloop()
+
+def supprimer_utilisateur(utilisateur_data):
+    """Supprimer l'utilisateur des fichiers et des produits."""
+    fichier_usernames_passwords = "./DATA/usernames_passwords.csv"  # Exemple de chemin
+    fichier_produit = "./DATA/assignations_stock.csv"  # Exemple de chemin
+    
     
     with open(fichier_usernames_passwords, 'r', encoding='utf-8') as csvfilepass:
         reader = csv.reader(csvfilepass, delimiter=',')
-        header_users = next(reader, None)  
+        header_users = next(reader, None)
         utilisateurs = list(reader)
 
-   
-    utilisateur_data = next((row for row in utilisateurs if row[0] == utilisateur_hash), None)
-    if not utilisateur_data:
-        print("Utilisateur introuvable.")
-        return
-
-    confirmation = input("Êtes-vous sûr de vouloir supprimer votre compte ? Tapez 'OUI' pour confirmer : ").strip().upper()
-    if confirmation != "OUI":
-        print("Suppression annulée. Retour au menu principal.")
-        return
-
-    
-    mot_de_passe = getpass("Entrez votre mot de passe pour confirmer : ").strip()
-    if not verifier_mot_de_passe(utilisateur_data[1], utilisateur_data[2], mot_de_passe):
-        print("Mot de passe incorrect. Suppression annulée.")
-        return
-
-    # Supprimer l'utilisateur des utilisateurs
-    utilisateurs_sans_compte = [row for row in utilisateurs if row[0] != utilisateur_hash]
-
+    utilisateurs_sans_compte = [row for row in utilisateurs if row[0] != utilisateur_data[0]]
     
     with open(fichier_usernames_passwords, 'w', encoding='utf-8', newline='') as csvfilepass:
         writer = csv.writer(csvfilepass, delimiter=',')
         if header_users:
-            writer.writerow(header_users)  
-        writer.writerows(utilisateurs_sans_compte)  
-    
-    print("Votre compte et les donées assignées ont été supprimés avec succès.")
+            writer.writerow(header_users)
+        writer.writerows(utilisateurs_sans_compte)
 
-   
+    # Suppression des produits associés à cet utilisateur
     with open(fichier_produit, 'r', encoding='utf-8') as csvfileprod:
         reader = csv.reader(csvfileprod, delimiter=',')
-        header_products = next(reader, None)  
+        header_products = next(reader, None)
         produits = list(reader)
 
-    produits_restants = [row for row in produits if row[0] != utilisateur_hash]
+    produits_restants = [row for row in produits if row[0] != utilisateur_data[0]]
 
-    
     with open(fichier_produit, 'w', encoding='utf-8', newline='') as csvfileprod:
         writer = csv.writer(csvfileprod, delimiter=',')
         if header_products:
-            writer.writerow(header_products)  
-        writer.writerows(produits_restants)  
+            writer.writerow(header_products)
+        writer.writerows(produits_restants)
 
-    
+    messagebox.showinfo("Succès", "Votre compte et les données associées ont été supprimés avec succès.")
 
 def verifier_mot_de_passe(salt, mot_de_passe_hash, mot_de_passe):
-    import hashlib
+    
     hash_calculé = hashlib.sha256((salt + mot_de_passe).encode('utf-8')).hexdigest()
-    return hash_calculé == mot_de_passe_hash       
+    return hash_calculé == mot_de_passe_hash     
         
 #===========================================================================================================
 
@@ -393,12 +465,13 @@ if __name__ == "__main__":
     fichier_compromis = "./DATA/historique_compromissions.csv"
     fichier_historique = "./DATA/historique_requete.csv"
     fichier_usernames_passwords = "./Data/usernames_passwords.csv"
+   
     print("Connexion au système requise.")
     check, user = log.account()
     if sys.exit():
         utilisateur_hash = sha256(user.strip().encode('utf-8')).hexdigest()
         enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Deconnexion")
-    if not check: 
+    if not check:
         utilisateur_hash = sha256(user.strip().encode('utf-8')).hexdigest()
         enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Connexion réussi")
         print("Accès refusé. \nSi vous n'avez pas de compte créez en un ! \nSinon l'email ou le mot de passe est incorrect !")
