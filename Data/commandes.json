@@ -1,0 +1,50 @@
+[
+    {
+        "utilisateur": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506",
+        "produits": [
+            {
+                "nom": "TEST",
+                "prix_unitaire": "111.0",
+                "quantite": 1,
+                "prix_total": "111.0"
+            }
+        ],
+        "date": "2025-01-08 15:51:30"
+    },
+    {
+        "utilisateur": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506",
+        "produits": [
+            {
+                "nom": "TEST",
+                "prix_unitaire": "111.0",
+                "quantite": 1,
+                "prix_total": "111.0"
+            }
+        ],
+        "date": "2025-01-08 16:31:40"
+    },
+    {
+        "utilisateur": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506",
+        "produits": [
+            {
+                "nom": "TEST",
+                "prix_unitaire": "111.0",
+                "quantite": 1,
+                "prix_total": "111.0"
+            }
+        ],
+        "date": "2025-01-08 16:52:21"
+    },
+    {
+        "utilisateur": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506",
+        "produits": [
+            {
+                "nom": "TEST2",
+                "prix_unitaire": "222.0",
+                "quantite": 1,
+                "prix_total": "222.0"
+            }
+        ],
+        "date": "2025-01-08 17:23:54"
+    }
+]

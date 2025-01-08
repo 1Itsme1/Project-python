@@ -10,6 +10,7 @@ from tkinter import *
 from tkinter import ttk
 import tkinter.messagebox as MessageBox
 
+
 def afficher_menu():
     print("\n=== MENU PRINCIPAL ===")
     print("0. Compte")
@@ -60,6 +61,36 @@ def enregistrer_historique_requete(fichier_historique, utilisateur, action):
         print(f"Erreur lors de l'enregistrement de l'historique : {e}")
 
 #===========================================================================================================
+def lire_stock_global_all(fichier):
+    stock_global = []
+    
+    try:
+        with open(fichier, "r", encoding="utf-8") as f:
+            for ligne in f:
+                ligne = ligne.strip()
+                if not ligne:
+                    continue
+                try:
+                    utilisateur_dans_csv, nom, prix, quantite = [part.strip() for part in ligne.split(",")]
+                    prix = float(prix)
+                    quantite = int(quantite)
+
+                   
+                    stock_global.append({
+                        "utilisateur": utilisateur_dans_csv,
+                        "nom": nom,
+                        "prix": prix,
+                        "stock": quantite
+                    })
+                except ValueError as e:
+                    print(f"Erreur dans la ligne : {ligne}. Détails : {e}")
+    except FileNotFoundError:
+        print(f"Fichier '{fichier}' introuvable.")
+    
+    return stock_global
+
+
+
 def lire_stock_global(fichier, user):
     assignations = {}
     utilisateur_hash = sha256(user.strip().encode('utf-8')).hexdigest()

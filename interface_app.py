@@ -1,9 +1,12 @@
 from tkinter import *
 from tkinter import ttk
+import tkinter as tk
 import tkinter.messagebox as MessageBox
 from log import verifier_connexion, creer_compte
 from Main import verifier_mot_de_passe,suppression_compte,changer_mot_de_passe_graphique, lire_stock_global, sauvegarder_stock, rechercher_produit_par_nom, enregistrer_historique_requete,enregistrer_mot_de_passe_compromis,verifier_password
 from hashlib import sha256
+import json
+from datetime import datetime
 #===========================================================================================================
 def afficher_page_connexion():
     
@@ -124,15 +127,25 @@ def afficher_page_principale(utilisateur):
     bouton_compte = Button(fenetre, text="Compte", width=20, height=3, font=("Helvetica", 14), bg="#28A745", fg="white", bd=0,command=lambda: afficher_page_compte(utilisateur))
     bouton_compte.pack(pady=10)
 
-    bouton_afficher_stock = Button(fenetre, text="Stock", width=20, height=3, font=("Helvetica", 14), bg="#2196F3", fg="white", bd=0, command=lambda: afficher_stock(utilisateur))
+    bouton_afficher_stock = Button(fenetre, text="Mon stock", width=20, height=3, font=("Helvetica", 14), bg="#2196F3", fg="white", bd=0, command=lambda: afficher_stock(utilisateur))
     bouton_afficher_stock.pack(pady=10)
 
-    bouton_deconnexion = Button(fenetre, text="Déconnexion", command=deconnexion, width=20, height=3, font=("Helvetica", 14), bg="#DC3545", fg="white", bd=0)
+    bouton_commandes = Button(fenetre, text="Commander", width=20,command=lambda: afficher_commandes(utilisateur), height=3, font=("Helvetica", 14), bg="#F39C12", fg="white", bd=0)
+    bouton_commandes.pack(pady=10)
+
+    bouton_liste_commandes = Button(fenetre, text="Liste des commandes", width=20, height=3, font=("Helvetica", 14), bg="#F39C12", fg="white", bd=0)
+    bouton_liste_commandes.pack(pady=10)
+
+
+    bouton_deconnexion = Button(fenetre, text="Déconnexion", command=lambda:deconnexion(utilisateur), width=20, height=3, font=("Helvetica", 14), bg="#DC3545", fg="white", bd=0)
     bouton_deconnexion.pack(pady=10)
 
-    bouton_quitter = Button(fenetre, text="Quitter", command=fenetre.quit, width=20, height=3, font=("Helvetica", 14), bg="#DC3545", fg="white", bd=0)
+    bouton_quitter = Button(fenetre, text="Quitter", command=lambda: quitter_fenetre(utilisateur), width=20, height=3, font=("Helvetica", 14), bg="#DC3545", fg="white", bd=0)
     bouton_quitter.pack(pady=10)
 #===========================================================================================================
+def quitter_fenetre(utilisateur):
+    fenetre.quit()
+    enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur, f"A quitter l'application")
 
 def afficher_stock_gui(fenetre, assignations, utilisateur_hash):
     tree = ttk.Treeview(fenetre, columns=("Nom", "Prix (€)", "Stock"), show="headings")
@@ -151,8 +164,23 @@ def afficher_stock_gui(fenetre, assignations, utilisateur_hash):
     tree.pack(fill=BOTH, expand=True, padx=10, pady=10)
     return tree
 
-#===========================================================================================================
+def afficher_stock_gui_all(fenetre, stock_global):
+    
+    tree = ttk.Treeview(fenetre, columns=("Nom", "Prix (€)", "Stock", "Utilisateur"), show="headings")
+    
+    tree.heading("Nom", text="Nom du produit")
+    tree.heading("Prix (€)", text="Prix (€)")
+    tree.heading("Stock", text="Stock")
+    tree.heading("Utilisateur", text="Utilisateur")
 
+    
+    for produit in stock_global:
+        tree.insert("", "end", values=(produit["nom"], produit["prix"], produit["stock"], produit["utilisateur"]))
+    
+    
+    tree.pack(fill="both", expand=True)
+
+#===========================================================================================================
 def afficher_stock(utilisateur):
     for widget in fenetre.winfo_children():
         widget.pack_forget()
@@ -208,7 +236,7 @@ def afficher_stock(utilisateur):
 
     Button(frame_outils, text="Rechercher", command=rechercher_produit, font=("Helvetica", 12), bg="#6C757D", fg="white").pack(side=LEFT, padx=5)
 
-    # Boutons de tri
+   
     Label(frame_outils, text="Trier par : ", font=("Helvetica", 12)).pack(side=LEFT, padx=10)
 
     Button(frame_outils, text="Nom", command=lambda: trier_stock("nom"), font=("Helvetica", 12), bg="#007BFF", fg="white").pack(side=LEFT, padx=5)
@@ -412,16 +440,84 @@ def afficher_page_compte(utilisateur):
     bouton_retour = Button(fenetre, text="Retour", command=lambda: afficher_page_principale(utilisateur), 
                            width=20, height=2, font=("Helvetica", 12), bg="#6C757D", fg="white", bd=0)
     bouton_retour.pack(pady=10)
+
 #===========================================================================================================
-def deconnexion():
+def afficher_commandes(utilisateur):
+    for widget in fenetre.winfo_children():
+        widget.pack_forget()
+    stock_global = 
+    utilisateur_hash = sha256(utilisateur.strip().encode('utf-8')).hexdigest()
+    assignations = lire_stock_global(fichier_produit, utilisateur)
+
+    Label(fenetre, text="Créer une commande", font=("Helvetica", 16)).pack(pady=20)
+
+    tree = afficher_stock_gui_all(fenetre, stock_global)
+
+    Label(fenetre, text="Quantité à commander :", font=("Helvetica", 12)).pack(pady=10)
+    quantite_var = StringVar()
+    Entry(fenetre, textvariable=quantite_var, font=("Helvetica", 12)).pack(pady=10)
+
+    commandes = []
+#=======================================
+    def ajouter_au_panier():
+        selected_items = tree.selection()
+        if not selected_items:
+            MessageBox.showerror("Erreur", "Veuillez sélectionner un produit.")
+            return
+
+        produit = tree.item(selected_items)["values"]
+        try:
+            quantite = int(quantite_var.get())
+            if quantite <= 0:
+                raise ValueError
+        except ValueError:
+            MessageBox.showerror("Erreur", "Veuillez entrer une quantité valide.")
+            return
+
+        commandes.append({
+            "nom": produit[0],
+            "prix_unitaire": produit[1],
+            "quantite": quantite,
+            "prix_total": produit[1] * quantite
+        })
+        MessageBox.showinfo("Succès", f"Produit '{produit[0]}' ajouté au panier.")
+        quantite_var.set("")
+#=======================================
+    def finaliser_commande():
+        if not commandes:
+            MessageBox.showerror("Erreur", "Le panier est vide.")
+            return
+        try:
+            with open(fichier_commandes, "r") as f:
+                historique_commandes = json.load(f)
+        except FileNotFoundError:
+            historique_commandes = []
+
+        commande = {
+            "utilisateur": utilisateur_hash,
+            "produits": commandes,
+            "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        }
+        historique_commandes.append(commande)
+
+        with open(fichier_commandes, "w") as f:
+            json.dump(historique_commandes, f, indent=4)
+
+        MessageBox.showinfo("Succès", "Commande enregistrée avec succès !")
+        enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Nouvelle commande enregistrée")
+        afficher_page_principale(utilisateur)
+
+    Button(fenetre, text="Ajouter au panier", command=ajouter_au_panier, font=("Helvetica", 12), bg="#28A745", fg="white").pack(pady=10)
+    Button(fenetre, text="Finaliser la commande", command=finaliser_commande, font=("Helvetica", 12), bg="#007BFF", fg="white").pack(pady=10)
+    Button(fenetre, text="Retour", command=lambda: afficher_page_principale(utilisateur), font=("Helvetica", 12), bg="#6C757D", fg="white").pack(pady=20)              
+#===========================================================================================================
+def deconnexion(utilisateur):
     MessageBox.showinfo("Déconnexion", "Vous êtes maintenant déconnecté.")
-    enregistrer_historique_requete("./Data/historique_requetes.csv", f"Déconnexion...")
+    enregistrer_historique_requete("./Data/historique_requetes.csv",utilisateur, "Déconnexion...")
     afficher_page_connexion()
 #===========================================================================================================
 
-fenetre = Tk()
-if fenetre.quit():
-    enregistrer_historique_requete("./Data/historique_requetes.csv", f"Déconnexion...")
+fenetre = Tk()  
 fenetre.geometry("1200x900")
 fenetre.title("Gestion de stock")
 fenetre.config(bg="#F8F9FA")  
@@ -437,6 +533,7 @@ boutonConnexion.pack(pady=20, fill=X, padx=50)
 boutonCreation = Button(fenetre, text="Créer un compte", command=afficher_champs_saisie_creation, width=20, height=3, font=("Helvetica", 14), bg="#28A745", fg="white", bd=0)
 boutonCreation.pack(pady=20, fill=X, padx=50)
 
+fichier_commandes = "./DATA/commandes.json"
 fichier_produit = "./Data/assignations_stock.csv"
 fichier_usernames_passwords = "./Data/usernames_passwords.csv"
 fenetre.mainloop()
