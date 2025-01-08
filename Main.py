@@ -10,7 +10,7 @@ from tkinter import *
 from tkinter import ttk
 import tkinter.messagebox as MessageBox
 
-
+"""
 def afficher_menu():
     print("\n=== MENU PRINCIPAL ===")
     print("0. Compte")
@@ -46,6 +46,7 @@ def afficher_compte():
     print ("2. Supprimer mon compte /!\\")
     print("3. Retour au menu principal")
     print("====================")
+"""
 #===========================================================================================================
 
 def enregistrer_historique_requete(fichier_historique, utilisateur, action):
@@ -61,11 +62,11 @@ def enregistrer_historique_requete(fichier_historique, utilisateur, action):
         print(f"Erreur lors de l'enregistrement de l'historique : {e}")
 
 #===========================================================================================================
-def lire_stock_global_all(fichier):
+def lire_stock_global_all(fichier_produit):
     stock_global = []
     
     try:
-        with open(fichier, "r", encoding="utf-8") as f:
+        with open(fichier_produit, "r", encoding="utf-8") as f:
             for ligne in f:
                 ligne = ligne.strip()
                 if not ligne:
@@ -75,7 +76,6 @@ def lire_stock_global_all(fichier):
                     prix = float(prix)
                     quantite = int(quantite)
 
-                   
                     stock_global.append({
                         "utilisateur": utilisateur_dans_csv,
                         "nom": nom,
@@ -85,11 +85,11 @@ def lire_stock_global_all(fichier):
                 except ValueError as e:
                     print(f"Erreur dans la ligne : {ligne}. Détails : {e}")
     except FileNotFoundError:
-        print(f"Fichier '{fichier}' introuvable.")
+        print(f"Fichier '{fichier_produit}' introuvable.")
     
     return stock_global
 
-
+#===========================================================================================================
 
 def lire_stock_global(fichier, user):
     assignations = {}
@@ -150,6 +150,7 @@ def sauvegarder_stock(fichier_produit, assignations):
                 f.write(f"{utilisateur},{produit['nom']},{produit['prix']},{produit['stock']}\n")
 
 #===========================================================================================================
+"""
 def afficher_stock(assignations, utilisateur_hash):
     if utilisateur_hash in assignations:
         produits = assignations[utilisateur_hash]
@@ -162,6 +163,7 @@ def afficher_stock(assignations, utilisateur_hash):
             print("Votre stock est vide. Vous pouvez commencer à ajouter des produits !")
     else:
         print("Votre stock est vide. Vous pouvez commencer à ajouter des produits !")
+"""       
 #===========================================================================================================
 
 def tri_rapide(stock, key, reverse=False):
@@ -175,6 +177,7 @@ def rechercher_produit_par_nom(stock, nom_recherche):
 
 
 #===========================================================================================================
+"""
 def ajouter_produit(assignations, utilisateur):
     nom = input("Entrez le nom du produit : ")
     try:
@@ -256,6 +259,7 @@ def modifier_produit(assignations, utilisateur):
 def initialiser_stock_utilisateur(assignations, utilisateur):
     if utilisateur not in assignations:
         assignations[utilisateur] = []
+"""
 #===========================================================================================================
 def enregistrer_mot_de_passe_compromis(fichier_compromis, utilisateur_hash, mot_de_passe):
     try:
@@ -271,33 +275,31 @@ def enregistrer_mot_de_passe_compromis(fichier_compromis, utilisateur_hash, mot_
     except Exception as e:
         print(f"Erreur lors de l'enregistrement du mot de passe compromis : {e}")
 #===========================================================================================================
-"""
-import smtplib
-from email.mime.text import MIMEText
-from email.mime.multipart import MIMEMultipart
 
-def envoyer_email_notification():
-"""
+#import smtplib
+#from email.mime.text import MIMEText
+#from email.mime.multipart import MIMEMultipart
+
+#def envoyer_email_notification():
+
 #===========================================================================================================
 def verifier_password(password, utilisateur_hash):
-    """
-    Vérifie si le mot de passe est compromis via l'API PwnedPasswords et affiche les résultats dans une interface graphique.
-    """
+
     try:
-        # Calcul du hash SHA-1 du mot de passe
+        
         sha1_hash = hashlib.sha1(password.encode('utf-8')).hexdigest().upper()
         prefix = sha1_hash[:5]  
         suffix = sha1_hash[5:]  
 
-        # Appel de l'API PwnedPasswords
+        
         url = f"https://api.pwnedpasswords.com/range/{prefix}"
         response = requests.get(url)
 
-        # Gestion des erreurs de connexion
+       
         if response.status_code != 200:
             raise RuntimeError(f"Erreur de connexion à l'API : {response.status_code}")
 
-        # Recherche dans les résultats de l'API
+        
         found = False
         hashes = (line.split(':') for line in response.text.splitlines())
         for returned_suffix, count in hashes:
@@ -330,10 +332,10 @@ def generer_salt():
     return base64.b64encode(os.urandom(16)).decode('utf-8')
 
 def changer_mot_de_passe_graphique(fichier_usernames_passwords,utilisateur_hash, fenetre):
-    # Ouvrir le fichier des utilisateurs pour rechercher les informations de l'utilisateur
+    
     with open(fichier_usernames_passwords, 'r', encoding='utf-8') as csvfilepass:
         reader = csv.reader(csvfilepass, delimiter=',')
-        next(reader, None)  # Passer l'en-tête
+        next(reader, None) 
         utilisateurs = list(reader)
 
     utilisateur_data = None
@@ -346,13 +348,13 @@ def changer_mot_de_passe_graphique(fichier_usernames_passwords,utilisateur_hash,
         messagebox.showerror("Erreur", "Utilisateur introuvable.")
         return
 
-    # Fenêtre pour demander un nouveau mot de passe
+    
     def valider_nouveau_mot_de_passe():
-        # Récupérer les mots de passe saisis par l'utilisateur
+       
         nouveau_mot_de_passe = entry_nouveau_mdp.get()
         confirmer_mot_de_passe = entry_confirmer_mdp.get()
 
-        # Validation des mots de passe
+       
         if nouveau_mot_de_passe != confirmer_mot_de_passe:
             messagebox.showwarning("Attention", "Les mots de passe ne correspondent pas.")
             return
@@ -361,32 +363,32 @@ def changer_mot_de_passe_graphique(fichier_usernames_passwords,utilisateur_hash,
             messagebox.showwarning("Attention", "Le mot de passe doit comporter au moins 8 caractères, inclure un chiffre et une majuscule.")
             return
 
-        # Hashage du mot de passe avec un nouveau salt
+        
         nouveau_salt = generer_salt()
         hash_nouveau_mot_de_passe = hashlib.sha256((nouveau_salt + nouveau_mot_de_passe).encode('utf-8')).hexdigest()
 
-        # Mettre à jour les données de l'utilisateur
+        
         utilisateur_data[1] = nouveau_salt
         utilisateur_data[2] = hash_nouveau_mot_de_passe
 
-        # Sauvegarder les modifications dans le fichier
+        
         with open(fichier_usernames_passwords, 'w', encoding='utf-8', newline='') as csvfilepass:
             writer = csv.writer(csvfilepass, delimiter=',')
-            writer.writerow(["Utilisateur", "Salt", "Mot de passe"])  # Réécrire l'en-tête
+            writer.writerow(["Utilisateur", "Salt", "Mot de passe"])
 
             for row in utilisateurs:
                 writer.writerow(row)
 
-        # Afficher un message de confirmation et fermer la fenêtre de changement de mot de passe
+       
         messagebox.showinfo("Succès", "Mot de passe mis à jour avec succès !")
         fenetre_changement_mdp.destroy()
 
-    # Fenêtre pour changer le mot de passe (Toplevel)
+   
     fenetre_changement_mdp = tk.Toplevel(fenetre)
     fenetre_changement_mdp.title("Changer le mot de passe")
     fenetre_changement_mdp.geometry("400x300")
 
-    # Widgets pour saisir le mot de passe
+    
     label_nouveau_mdp = tk.Label(fenetre_changement_mdp, text="Nouveau mot de passe")
     label_nouveau_mdp.pack(pady=10)
 
@@ -399,14 +401,14 @@ def changer_mot_de_passe_graphique(fichier_usernames_passwords,utilisateur_hash,
     entry_confirmer_mdp = tk.Entry(fenetre_changement_mdp, show="*")
     entry_confirmer_mdp.pack(pady=5)
 
-    # Bouton pour valider le changement de mot de passe
+    
     bouton_valider = tk.Button(fenetre_changement_mdp, text="Valider", command=valider_nouveau_mot_de_passe)
     bouton_valider.pack(pady=20)
 
 
 #===========================================================================================================
 def suppression_compte(fichier_usernames_passwords, fichier_produit, utilisateur_hash, verifier_mot_de_passe, fenetre):
-    # Lecture des utilisateurs depuis le fichier
+    
     with open(fichier_usernames_passwords, 'r', encoding='utf-8') as csvfilepass:
         reader = csv.reader(csvfilepass, delimiter=',')
         header_users = next(reader, None)
@@ -417,13 +419,12 @@ def suppression_compte(fichier_usernames_passwords, fichier_produit, utilisateur
         messagebox.showerror("Erreur", "Utilisateur introuvable.")
         return
 
-    # Demander la confirmation de suppression avec un messagebox
+   
     confirmation = messagebox.askyesno("Confirmation", "Êtes-vous sûr de vouloir supprimer votre compte ?")
     if not confirmation:
         messagebox.showinfo("Annulation", "Suppression annulée.")
         return
 
-    # Demander le mot de passe à l'utilisateur via une fenêtre modale
     def valider_mot_de_passe():
         mot_de_passe = mot_de_passe_entry.get()
         if not verifier_mot_de_passe(utilisateur_data[1], utilisateur_data[2], mot_de_passe):
@@ -433,14 +434,14 @@ def suppression_compte(fichier_usernames_passwords, fichier_produit, utilisateur
             supprimer_utilisateur(utilisateur_data)
             suppression_window.destroy()
 
-    # Créer une nouvelle fenêtre pour saisir le mot de passe
+    
     suppression_window = tk.Toplevel(fenetre)
     suppression_window.title("Vérification du mot de passe")
 
     label_mdp = tk.Label(suppression_window, text="Entrez votre mot de passe pour confirmer :")
     label_mdp.pack(pady=10)
 
-    mot_de_passe_entry = tk.Entry(suppression_window, show="*")  # Masquer le mot de passe
+    mot_de_passe_entry = tk.Entry(suppression_window, show="*")
     mot_de_passe_entry.pack(pady=10)
 
     bouton_valider_mdp = tk.Button(suppression_window, text="Valider", command=valider_mot_de_passe)
@@ -449,9 +450,9 @@ def suppression_compte(fichier_usernames_passwords, fichier_produit, utilisateur
     suppression_window.mainloop()
 
 def supprimer_utilisateur(utilisateur_data):
-    """Supprimer l'utilisateur des fichiers et des produits."""
-    fichier_usernames_passwords = "./DATA/usernames_passwords.csv"  # Exemple de chemin
-    fichier_produit = "./DATA/assignations_stock.csv"  # Exemple de chemin
+
+    fichier_usernames_passwords = "./DATA/usernames_passwords.csv"
+    fichier_produit = "./DATA/assignations_stock.csv"
     
     
     with open(fichier_usernames_passwords, 'r', encoding='utf-8') as csvfilepass:
@@ -467,7 +468,7 @@ def supprimer_utilisateur(utilisateur_data):
             writer.writerow(header_users)
         writer.writerows(utilisateurs_sans_compte)
 
-    # Suppression des produits associés à cet utilisateur
+    
     with open(fichier_produit, 'r', encoding='utf-8') as csvfileprod:
         reader = csv.reader(csvfileprod, delimiter=',')
         header_products = next(reader, None)

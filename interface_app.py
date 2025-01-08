@@ -3,9 +3,10 @@ from tkinter import ttk
 import tkinter as tk
 import tkinter.messagebox as MessageBox
 from log import verifier_connexion, creer_compte
-from Main import verifier_mot_de_passe,suppression_compte,changer_mot_de_passe_graphique, lire_stock_global, sauvegarder_stock, rechercher_produit_par_nom, enregistrer_historique_requete,enregistrer_mot_de_passe_compromis,verifier_password
+from Main import lire_stock_global_all,verifier_mot_de_passe,suppression_compte,changer_mot_de_passe_graphique, lire_stock_global, sauvegarder_stock, enregistrer_historique_requete,verifier_password
 from hashlib import sha256
 import json
+import customtkinter as ctk
 from datetime import datetime
 #===========================================================================================================
 def afficher_page_connexion():
@@ -99,7 +100,8 @@ def afficher_champs_saisie_creation():
         
         success, user = creer_compte(username, password)
         if success:
-            MessageBox.showinfo("Succès", f"Votre compte a été créé avec succès. Bienvenue {user}!")
+            name_avant_arobase = user.split('@')[0]
+            MessageBox.showinfo("Succès", f"Votre compte a été créé avec succès. Bienvenue {name_avant_arobase}!")
             enregistrer_historique_requete("./Data/historique_requetes.csv", username, f"Création du compte {username}...")
             afficher_page_connexion() 
         else:
@@ -130,7 +132,7 @@ def afficher_page_principale(utilisateur):
     bouton_afficher_stock = Button(fenetre, text="Mon stock", width=20, height=3, font=("Helvetica", 14), bg="#2196F3", fg="white", bd=0, command=lambda: afficher_stock(utilisateur))
     bouton_afficher_stock.pack(pady=10)
 
-    bouton_commandes = Button(fenetre, text="Commander", width=20,command=lambda: afficher_commandes(utilisateur), height=3, font=("Helvetica", 14), bg="#F39C12", fg="white", bd=0)
+    bouton_commandes = Button(fenetre, text="Commander", width=20,command=lambda: affichage_commander(utilisateur), height=3, font=("Helvetica", 14), bg="#F39C12", fg="white", bd=0)
     bouton_commandes.pack(pady=10)
 
     bouton_liste_commandes = Button(fenetre, text="Liste des commandes", width=20, height=3, font=("Helvetica", 14), bg="#F39C12", fg="white", bd=0)
@@ -163,22 +165,21 @@ def afficher_stock_gui(fenetre, assignations, utilisateur_hash):
 
     tree.pack(fill=BOTH, expand=True, padx=10, pady=10)
     return tree
-
-def afficher_stock_gui_all(fenetre, stock_global):
-    
-    tree = ttk.Treeview(fenetre, columns=("Nom", "Prix (€)", "Stock", "Utilisateur"), show="headings")
+#========================================================
+def afficher_stock_gui_all(fenetre, assignations): 
+    tree = ttk.Treeview(fenetre, columns=("Nom", "Prix (€)", "Stock"), show="headings")
     
     tree.heading("Nom", text="Nom du produit")
     tree.heading("Prix (€)", text="Prix (€)")
     tree.heading("Stock", text="Stock")
-    tree.heading("Utilisateur", text="Utilisateur")
+    
 
-    
-    for produit in stock_global:
-        tree.insert("", "end", values=(produit["nom"], produit["prix"], produit["stock"], produit["utilisateur"]))
-    
+    # Ajouter les produits au tableau
+    for produit in assignations:
+        tree.insert("", "end", values=(produit["nom"], produit["prix"], produit["stock"]))
     
     tree.pack(fill="both", expand=True)
+    return tree
 
 #===========================================================================================================
 def afficher_stock(utilisateur):
@@ -442,21 +443,72 @@ def afficher_page_compte(utilisateur):
     bouton_retour.pack(pady=10)
 
 #===========================================================================================================
-def afficher_commandes(utilisateur):
+def affichage_commander(utilisateur):
+   
     for widget in fenetre.winfo_children():
         widget.pack_forget()
-    stock_global = 
+
+    def tri_rapide(stock, key, reverse=False):
+        enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, f"Tri du stock pour commander")
+        return sorted(stock, key=lambda x: x[key], reverse=reverse)
+    
     utilisateur_hash = sha256(utilisateur.strip().encode('utf-8')).hexdigest()
-    assignations = lire_stock_global(fichier_produit, utilisateur)
+    assignations = lire_stock_global_all(fichier_produit) 
 
-    Label(fenetre, text="Créer une commande", font=("Helvetica", 16)).pack(pady=20)
+    
+    Label(fenetre, text="Liste des produits disponibles", font=("Helvetica", 16)).pack(pady=20)
 
-    tree = afficher_stock_gui_all(fenetre, stock_global)
+    
+    tree = afficher_stock_gui_all(fenetre, assignations)
+    
+    frame_outils = Frame(fenetre, padx=10, pady=10)
+    frame_outils.pack()
+
+    
+    def rafraichir_treeview(produits):
+        for item in tree.get_children():
+            tree.delete(item)
+        for produit in produits:
+            tree.insert("", "end", values=(produit["nom"], produit["prix"], produit["stock"]))
+
+    
+    def rechercher_produit():
+        nom_recherche = valeur_recherche.get().strip().lower()
+        if not nom_recherche:
+            MessageBox.showerror("Erreur", "Veuillez entrer un nom de produit à rechercher.")
+            return
+
+        produits_trouves = [produit for produit in assignations if nom_recherche in produit["nom"].lower()]
+
+        if produits_trouves:
+            rafraichir_treeview(produits_trouves)
+        else:
+            MessageBox.showinfo("Aucun résultat", "Aucun produit trouvé avec ce nom.")
+
+    
+    def trier_stock(critere):
+        produits_tries = tri_rapide(assignations, key=critere)
+        rafraichir_treeview(produits_tries)
+
+   
+    Label(frame_outils, text="Rechercher un produit : ", font=("Helvetica", 12)).pack(side=LEFT, padx=5)
+    valeur_recherche = StringVar()
+    entry_recherche = Entry(frame_outils, textvariable=valeur_recherche, font=("Helvetica", 12), width=30)
+    entry_recherche.pack(side=LEFT, padx=5)
+
+    Button(frame_outils, text="Rechercher", command=rechercher_produit, font=("Helvetica", 12), bg="#6C757D", fg="white").pack(side=LEFT, padx=5)
+
+    
+    Label(frame_outils, text="Trier par : ", font=("Helvetica", 12)).pack(side=LEFT, padx=10)
+    Button(frame_outils, text="Nom", command=lambda: trier_stock("nom"), font=("Helvetica", 12), bg="#007BFF", fg="white").pack(side=LEFT, padx=5)
+    Button(frame_outils, text="Prix", command=lambda: trier_stock("prix"), font=("Helvetica", 12), bg="#007BFF", fg="white").pack(side=LEFT, padx=5)
+    Button(frame_outils, text="Quantité", command=lambda: trier_stock("stock"), font=("Helvetica", 12), bg="#007BFF", fg="white").pack(side=LEFT, padx=5)
 
     Label(fenetre, text="Quantité à commander :", font=("Helvetica", 12)).pack(pady=10)
     quantite_var = StringVar()
     Entry(fenetre, textvariable=quantite_var, font=("Helvetica", 12)).pack(pady=10)
 
+    
     commandes = []
 #=======================================
     def ajouter_au_panier():
@@ -465,22 +517,24 @@ def afficher_commandes(utilisateur):
             MessageBox.showerror("Erreur", "Veuillez sélectionner un produit.")
             return
 
-        produit = tree.item(selected_items)["values"]
-        try:
-            quantite = int(quantite_var.get())
-            if quantite <= 0:
-                raise ValueError
-        except ValueError:
-            MessageBox.showerror("Erreur", "Veuillez entrer une quantité valide.")
-            return
+        for item in selected_items:
+            produit = tree.item(item)["values"]
+            try:
+                quantite = int(quantite_var.get())
+                if quantite <= 0:
+                    raise ValueError
+            except ValueError:
+                MessageBox.showerror("Erreur", "Veuillez entrer une quantité valide.")
+                return
 
-        commandes.append({
-            "nom": produit[0],
-            "prix_unitaire": produit[1],
-            "quantite": quantite,
-            "prix_total": produit[1] * quantite
-        })
-        MessageBox.showinfo("Succès", f"Produit '{produit[0]}' ajouté au panier.")
+            commandes.append({
+                "nom": produit[0],
+                "prix_unitaire": produit[1],
+                "quantite": quantite,
+                "prix_total": produit[1] * quantite
+            })
+            MessageBox.showinfo("Succès", f"Produit '{produit[0]}' ajouté au panier.")
+
         quantite_var.set("")
 #=======================================
     def finaliser_commande():
