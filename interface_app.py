@@ -541,11 +541,12 @@ def affichage_commander(utilisateur):
             else:
                 status = "traitée"
 
+            resultat_total = float(produit[1])*quantite 
             commandes.append({
                 "nom": produit[0],
                 "prix_unitaire": produit[1],
                 "quantite": quantite,
-                "prix_total": produit[1] * quantite,
+                "prix_total": resultat_total,
                 "status": status
             })
             MessageBox.showinfo("Succès", f"Produit '{produit[0]}' ajouté au panier.")
@@ -645,6 +646,7 @@ def lister_commande(utilisateur):
     
     if not historique_commandes:
         MessageBox.showinfo("Aucune commande", "Aucune commande effectuée.")
+        afficher_page_principale(utilisateur)
         return
     
     Label(fenetre, text="Historique des commandes", font=("Helvetica", 16)).pack(pady=20)
