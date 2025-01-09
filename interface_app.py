@@ -8,6 +8,7 @@ from hashlib import sha256
 import json
 import customtkinter as ctk
 from datetime import datetime
+import csv 
 #===========================================================================================================
 def afficher_page_connexion():
     
@@ -526,7 +527,7 @@ def affichage_commander(utilisateur):
             except ValueError:
                 MessageBox.showerror("Erreur", "Veuillez entrer une quantité valide.")
                 return
-
+            
             commandes.append({
                 "nom": produit[0],
                 "prix_unitaire": produit[1],
@@ -541,16 +542,42 @@ def affichage_commander(utilisateur):
         if not commandes:
             MessageBox.showerror("Erreur", "Le panier est vide.")
             return
+        
+
         try:
+            stock_global = []
             with open(fichier_commandes, "r") as f:
                 historique_commandes = json.load(f)
         except FileNotFoundError:
             historique_commandes = []
+        
+            
+            with open(fichier_produit, "r") as f:
+                lecteur_csv = csv.DictReader(f)
+                for ligne in lecteur_csv:
+                    ligne["stock"] = int(ligne["stock"])
+                    ligne["prix"] = float(ligne["prix"])  
+                    stock_global.append(ligne)
+
+        for produit_commande in commandes:
+            nom_produit = produit_commande["nom"]
+            quantite_commandee = produit_commande["quantite"]
+
+            for produit_stock in stock_global:
+                if produit_stock["nom"] == nom_produit:
+                    if produit_stock["stock"] >= quantite_commandee:
+                        produit_stock["stock"] -= quantite_commandee
+                    else:
+                        MessageBox.showerror("Erreur", f"Stock insuffisant pour le produit '{nom_produit}'.")
+                        return
+                    break
+        
 
         commande = {
             "utilisateur": utilisateur_hash,
             "produits": commandes,
             "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        
         }
         historique_commandes.append(commande)
 
@@ -563,7 +590,9 @@ def affichage_commander(utilisateur):
 
     Button(fenetre, text="Ajouter au panier", command=ajouter_au_panier, font=("Helvetica", 12), bg="#28A745", fg="white").pack(pady=10)
     Button(fenetre, text="Finaliser la commande", command=finaliser_commande, font=("Helvetica", 12), bg="#007BFF", fg="white").pack(pady=10)
-    Button(fenetre, text="Retour", command=lambda: afficher_page_principale(utilisateur), font=("Helvetica", 12), bg="#6C757D", fg="white").pack(pady=20)              
+    Button(fenetre, text="Retour", command=lambda: afficher_page_principale(utilisateur), font=("Helvetica", 12), bg="#6C757D", fg="white").pack(pady=20)
+#===========================================================================================================
+
 #===========================================================================================================
 def deconnexion(utilisateur):
     MessageBox.showinfo("Déconnexion", "Vous êtes maintenant déconnecté.")
