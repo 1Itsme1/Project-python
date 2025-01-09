@@ -490,7 +490,7 @@ def verifier_mot_de_passe(salt, mot_de_passe_hash, mot_de_passe):
     return hash_calculé == mot_de_passe_hash     
         
 #===========================================================================================================
-
+"""""
 if __name__ == "__main__":
     fichier_produit = "./Data/assignations_stock.csv"
     #fichier_listeCompromis = 'C:/Users/rmeney/Documents/GitHub/rockyou-sha256.txt'
@@ -516,8 +516,8 @@ if __name__ == "__main__":
     print(f"Bienvenue {name_avant_arobase} ! Vous êtes connecté.")  
 
     assignations = lire_stock_global(fichier_produit, user)
-
-
+"""
+"""""
     # Menu principal
 
     while True:
@@ -600,3 +600,4 @@ if __name__ == "__main__":
             sys.exit()
         else:
             print("Option invalide. Veuillez choisir une option entre 0 et 5 !")
+"""

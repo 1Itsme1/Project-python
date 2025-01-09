@@ -3,72 +3,13 @@
         "utilisateur": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506",
         "produits": [
             {
-                "nom": "C\u00e2ble USB-C 2m tress\u00e9",
-                "prix_unitaire": "15.0",
+                "nom": "TESTMODIF",
+                "prix_unitaire": "11.0",
                 "quantite": 1,
-                "prix_total": "15.0"
+                "prix_total": "11.0",
+                "status": "trait\u00e9e"
             }
         ],
-        "date": "2025-01-09 12:15:42"
-    },
-    {
-        "utilisateur": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506",
-        "produits": [
-            {
-                "nom": "Cam\u00e9ra GoPro Hero 11 Black",
-                "prix_unitaire": "499.0",
-                "quantite": 4,
-                "prix_total": "499.0499.0499.0499.0"
-            }
-        ],
-        "date": "2025-01-09 12:16:25"
-    },
-    {
-        "utilisateur": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506",
-        "produits": [
-            {
-                "nom": "TEST",
-                "prix_unitaire": "111.0",
-                "quantite": 1,
-                "prix_total": "111.0"
-            }
-        ],
-        "date": "2025-01-09 12:27:30"
-    },
-    {
-        "utilisateur": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506",
-        "produits": [
-            {
-                "nom": "TEST",
-                "prix_unitaire": "111.0",
-                "quantite": 1,
-                "prix_total": "111.0"
-            }
-        ],
-        "date": "2025-01-09 12:31:03"
-    },
-    {
-        "utilisateur": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506",
-        "produits": [
-            {
-                "nom": "TEST",
-                "prix_unitaire": "111.0",
-                "quantite": 110,
-                "prix_total": "111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0111.0"
-            }
-        ],
-        "date": "2025-01-09 12:32:53"
-    },
-    {
-        "utilisateur": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506",
-        "produits": [
-            {
-                "nom": "TEST",
-                "prix_unitaire": "111.0",
-                "quantite": 1,
-                "prix_total": "111.0"
-            }
-        ],
-        "date": "2025-01-09 12:36:29"
+        "date": "2025-01-09 16:09:03"
     }
 ]

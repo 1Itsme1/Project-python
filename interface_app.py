@@ -6,10 +6,10 @@ from log import verifier_connexion, creer_compte
 from Main import lire_stock_global_all,verifier_mot_de_passe,suppression_compte,changer_mot_de_passe_graphique, lire_stock_global, sauvegarder_stock, enregistrer_historique_requete,verifier_password
 from hashlib import sha256
 import json
-import customtkinter as ctk
 from datetime import datetime
 import csv 
 #===========================================================================================================
+
 def afficher_page_connexion():
     
     for widget in fenetre.winfo_children():
@@ -118,10 +118,7 @@ def afficher_champs_saisie_creation():
 def afficher_page_principale(utilisateur):
     
     for widget in fenetre.winfo_children():
-        try:
             widget.pack_forget()
-        except Exception as e:
-            print(f"Erreur lors de l'oubli du widget {widget}: {e}")
 
     name_avant_arobase = utilisateur.split('@')[0]
     titre_principal = Label(fenetre, text=f"Bienvenue {name_avant_arobase} !", font=("Helvetica", 16))
@@ -136,9 +133,11 @@ def afficher_page_principale(utilisateur):
     bouton_commandes = Button(fenetre, text="Commander", width=20,command=lambda: affichage_commander(utilisateur), height=3, font=("Helvetica", 14), bg="#F39C12", fg="white", bd=0)
     bouton_commandes.pack(pady=10)
 
-    bouton_liste_commandes = Button(fenetre, text="Liste des commandes", width=20, height=3, font=("Helvetica", 14), bg="#F39C12", fg="white", bd=0)
+    bouton_liste_commandes = Button(fenetre, text="Liste des commandes",command=lambda: lister_commande(utilisateur),width=20, height=3, font=("Helvetica", 14), bg="#F39C12", fg="white", bd=0)
     bouton_liste_commandes.pack(pady=10)
 
+    bouton_stats = Button(fenetre, text="Statistique",width=20, height=3, font=("Helvetica", 14), bg="#4900A6", fg="white", bd=0)
+    bouton_stats.pack(pady=10)
 
     bouton_deconnexion = Button(fenetre, text="Déconnexion", command=lambda:deconnexion(utilisateur), width=20, height=3, font=("Helvetica", 14), bg="#DC3545", fg="white", bd=0)
     bouton_deconnexion.pack(pady=10)
@@ -146,9 +145,11 @@ def afficher_page_principale(utilisateur):
     bouton_quitter = Button(fenetre, text="Quitter", command=lambda: quitter_fenetre(utilisateur), width=20, height=3, font=("Helvetica", 14), bg="#DC3545", fg="white", bd=0)
     bouton_quitter.pack(pady=10)
 #===========================================================================================================
+
 def quitter_fenetre(utilisateur):
     fenetre.quit()
     enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur, f"A quitter l'application")
+#===========================================================================================================
 
 def afficher_stock_gui(fenetre, assignations, utilisateur_hash):
     tree = ttk.Treeview(fenetre, columns=("Nom", "Prix (€)", "Stock"), show="headings")
@@ -167,6 +168,7 @@ def afficher_stock_gui(fenetre, assignations, utilisateur_hash):
     tree.pack(fill=BOTH, expand=True, padx=10, pady=10)
     return tree
 #========================================================
+
 def afficher_stock_gui_all(fenetre, assignations): 
     tree = ttk.Treeview(fenetre, columns=("Nom", "Prix (€)", "Stock"), show="headings")
     
@@ -175,7 +177,7 @@ def afficher_stock_gui_all(fenetre, assignations):
     tree.heading("Stock", text="Stock")
     
 
-    # Ajouter les produits au tableau
+    
     for produit in assignations:
         tree.insert("", "end", values=(produit["nom"], produit["prix"], produit["stock"]))
     
@@ -183,6 +185,7 @@ def afficher_stock_gui_all(fenetre, assignations):
     return tree
 
 #===========================================================================================================
+
 def afficher_stock(utilisateur):
     for widget in fenetre.winfo_children():
         widget.pack_forget()
@@ -191,12 +194,12 @@ def afficher_stock(utilisateur):
     assignations = lire_stock_global(fichier_produit, utilisateur)
     utilisateur_hash = sha256(utilisateur.strip().encode('utf-8')).hexdigest()
     enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur, f"Affichage du stock")
-
+#========================================================
     def tri_rapide(stock, key, reverse=False):
         enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, f"Tri du stock")
         return sorted(stock, key=lambda x: x[key], reverse=reverse)
 
-
+#========================================================
     def rafraichir_treeview(produits):
 
         for item in tree.get_children():
@@ -215,7 +218,7 @@ def afficher_stock(utilisateur):
     valeur_recherche = StringVar()
     entry_recherche = Entry(frame_outils, textvariable=valeur_recherche, font=("Helvetica", 12), width=30)
     entry_recherche.pack(side=LEFT, padx=5)
-
+#========================================================
     def rechercher_produit():
         nom_recherche = valeur_recherche.get().strip().lower()
         enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, f"Recherche produits")
@@ -245,7 +248,7 @@ def afficher_stock(utilisateur):
     Button(frame_outils, text="Prix", command=lambda: trier_stock("prix"), font=("Helvetica", 12), bg="#007BFF", fg="white").pack(side=LEFT, padx=5)
     Button(frame_outils, text="Quantité", command=lambda: trier_stock("stock"), font=("Helvetica", 12), bg="#007BFF", fg="white").pack(side=LEFT, padx=5)
 
-
+#========================================================
     def trier_stock(critere):
         produits = assignations.get(utilisateur_hash, [])
         produits_tries = tri_rapide(produits, key=critere)
@@ -323,7 +326,7 @@ def modifier_produit_gui(fenetre, assignations, utilisateur_hash, tree):
                 
                 label_choix = Label(choix_modification, text="Que voulez-vous modifier ?")
                 label_choix.pack(pady=10)
-                
+  #========================================================              
                 def modifier_nom():
                     nouveau_nom = entry_nouveau_nom.get()
                     if nouveau_nom:
@@ -335,7 +338,7 @@ def modifier_produit_gui(fenetre, assignations, utilisateur_hash, tree):
                     else:
                         MessageBox.showerror("Erreur", "Le nouveau nom ne peut pas être vide.")
                     choix_modification.destroy()
-                
+ #========================================================               
                 def modifier_prix():
                     try:
                         nouveau_prix = float(entry_nouveau_prix.get())
@@ -347,7 +350,7 @@ def modifier_produit_gui(fenetre, assignations, utilisateur_hash, tree):
                     except ValueError:
                         MessageBox.showerror("Erreur", "Le prix doit être un nombre valide.")
                     choix_modification.destroy()
-
+#========================================================
                 def modifier_quantite():
                     try:
                         nouvelle_quantite = int(entry_nouvelle_quantite.get())
@@ -448,7 +451,7 @@ def affichage_commander(utilisateur):
    
     for widget in fenetre.winfo_children():
         widget.pack_forget()
-
+#========================================================
     def tri_rapide(stock, key, reverse=False):
         enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, f"Tri du stock pour commander")
         return sorted(stock, key=lambda x: x[key], reverse=reverse)
@@ -465,14 +468,14 @@ def affichage_commander(utilisateur):
     frame_outils = Frame(fenetre, padx=10, pady=10)
     frame_outils.pack()
 
-    
+ #========================================================   
     def rafraichir_treeview(produits):
         for item in tree.get_children():
             tree.delete(item)
         for produit in produits:
             tree.insert("", "end", values=(produit["nom"], produit["prix"], produit["stock"]))
 
-    
+ #========================================================   
     def rechercher_produit():
         nom_recherche = valeur_recherche.get().strip().lower()
         if not nom_recherche:
@@ -486,7 +489,7 @@ def affichage_commander(utilisateur):
         else:
             MessageBox.showinfo("Aucun résultat", "Aucun produit trouvé avec ce nom.")
 
-    
+ #========================================================   
     def trier_stock(critere):
         produits_tries = tri_rapide(assignations, key=critere)
         rafraichir_treeview(produits_tries)
@@ -528,11 +531,22 @@ def affichage_commander(utilisateur):
                 MessageBox.showerror("Erreur", "Veuillez entrer une quantité valide.")
                 return
             
+            stock_disponible = None
+            for produit_stock in assignations:
+                if produit_stock["nom"] == produit[0]:
+                    stock_disponible = produit_stock["stock"]
+                    break
+            if stock_disponible is None or quantite > stock_disponible:
+                status = "rejetée (Stock insuffisant)"
+            else:
+                status = "traitée"
+
             commandes.append({
                 "nom": produit[0],
                 "prix_unitaire": produit[1],
                 "quantite": quantite,
-                "prix_total": produit[1] * quantite
+                "prix_total": produit[1] * quantite,
+                "status": status
             })
             MessageBox.showinfo("Succès", f"Produit '{produit[0]}' ajouté au panier.")
 
@@ -542,47 +556,72 @@ def affichage_commander(utilisateur):
         if not commandes:
             MessageBox.showerror("Erreur", "Le panier est vide.")
             return
-        
 
         try:
-            stock_global = []
+           
             with open(fichier_commandes, "r") as f:
                 historique_commandes = json.load(f)
         except FileNotFoundError:
             historique_commandes = []
+
         
-            
+        stock_global = []
+        try:
             with open(fichier_produit, "r") as f:
                 lecteur_csv = csv.DictReader(f)
                 for ligne in lecteur_csv:
-                    ligne["stock"] = int(ligne["stock"])
+                    ligne["stock"] = int(ligne["stock"])  
                     ligne["prix"] = float(ligne["prix"])  
                     stock_global.append(ligne)
+        except FileNotFoundError:
+            MessageBox.showerror("Erreur", "Le fichier de stock est introuvable.")
+            return
 
+        
         for produit_commande in commandes:
             nom_produit = produit_commande["nom"]
             quantite_commandee = produit_commande["quantite"]
 
+            produit_trouve = False
             for produit_stock in stock_global:
                 if produit_stock["nom"] == nom_produit:
+                    produit_trouve = True
                     if produit_stock["stock"] >= quantite_commandee:
-                        produit_stock["stock"] -= quantite_commandee
+                        produit_stock["stock"] -= quantite_commandee  
                     else:
                         MessageBox.showerror("Erreur", f"Stock insuffisant pour le produit '{nom_produit}'.")
                         return
                     break
-        
 
+            if not produit_trouve:
+                MessageBox.showerror("Erreur", f"Produit '{nom_produit}' introuvable dans le stock.")
+                return
+
+       
+        try:
+            with open(fichier_produit, "w", newline='', encoding="utf-8") as f:
+                champs = ["utilisateur", "nom", "prix", "stock"]
+                writer = csv.DictWriter(f, fieldnames=champs)
+                writer.writeheader()
+                writer.writerows(stock_global)
+        except Exception as e:
+            MessageBox.showerror("Erreur", f"Erreur lors de la sauvegarde du stock : {e}")
+            return
+
+        
         commande = {
             "utilisateur": utilisateur_hash,
             "produits": commandes,
             "date": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        }
+            }
         historique_commandes.append(commande)
 
-        with open(fichier_commandes, "w") as f:
-            json.dump(historique_commandes, f, indent=4)
+        try:
+            with open(fichier_commandes, "w",encoding='utf-8') as f:
+                json.dump(historique_commandes, f, indent=4)
+        except Exception as e:
+            MessageBox.showerror("Erreur", f"Erreur lors de la sauvegarde des commandes : {e}")
+            return
 
         MessageBox.showinfo("Succès", "Commande enregistrée avec succès !")
         enregistrer_historique_requete("./Data/historique_requetes.csv", utilisateur_hash, "Nouvelle commande enregistrée")
@@ -591,9 +630,50 @@ def affichage_commander(utilisateur):
     Button(fenetre, text="Ajouter au panier", command=ajouter_au_panier, font=("Helvetica", 12), bg="#28A745", fg="white").pack(pady=10)
     Button(fenetre, text="Finaliser la commande", command=finaliser_commande, font=("Helvetica", 12), bg="#007BFF", fg="white").pack(pady=10)
     Button(fenetre, text="Retour", command=lambda: afficher_page_principale(utilisateur), font=("Helvetica", 12), bg="#6C757D", fg="white").pack(pady=20)
-#===========================================================================================================
 
-#===========================================================================================================
+#========================================================
+def lister_commande(utilisateur):
+    for widget in fenetre.winfo_children():
+        widget.pack_forget()
+
+    try:
+        with open(fichier_commandes, "r", encoding='utf8') as f:
+            historique_commandes = json.load(f)
+    except FileNotFoundError:
+        historique_commandes = []
+
+    
+    if not historique_commandes:
+        MessageBox.showinfo("Aucune commande", "Aucune commande effectuée.")
+        return
+    
+    Label(fenetre, text="Historique des commandes", font=("Helvetica", 16)).pack(pady=20)
+
+    
+    tree = ttk.Treeview(fenetre, columns=("Produit", "Quantité", "Prix Total", "Statut", "Date"), show="headings")
+    tree.pack(pady=10)
+
+    
+    tree.heading("Produit", text="Produit")
+    tree.heading("Quantité", text="Quantité")
+    tree.heading("Prix Total", text="Prix Total")
+    tree.heading("Date", text="Date")
+    tree.heading("Statut", text="Statut")
+
+    for commande in historique_commandes:
+        for produit in commande["produits"]:
+            tree.insert("", "end", values=(
+                 
+                produit["nom"], 
+                produit["quantite"], 
+                produit["prix_total"], 
+                produit["status"], 
+                commande["date"]
+            ))
+
+    Button(fenetre, text="Retour", command=lambda: afficher_page_principale(utilisateur), font=("Helvetica", 12), bg="#DC3545", fg="white").pack(pady=20)
+#========================================================
+
 def deconnexion(utilisateur):
     MessageBox.showinfo("Déconnexion", "Vous êtes maintenant déconnecté.")
     enregistrer_historique_requete("./Data/historique_requetes.csv",utilisateur, "Déconnexion...")
