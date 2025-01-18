@@ -127,9 +127,11 @@ def sauvegarder_stock(fichier_produit, assignations):
     lignes_anciennes = {}
     try:
         with open(fichier_produit, "r", encoding="utf-8") as f:
-            for ligne in f:
+            for i,ligne in enumerate(f):
                 ligne = ligne.strip()
                 if ligne:
+                    if i == 0 and "utilisateur" in ligne.lower():
+                        continue
                     utilisateur, nom, prix, quantite = ligne.split(",")
                     if utilisateur not in lignes_anciennes:
                         lignes_anciennes[utilisateur] = []
@@ -145,6 +147,7 @@ def sauvegarder_stock(fichier_produit, assignations):
         lignes_anciennes[utilisateur] = produits
 
     with open(fichier_produit, "w", encoding="utf-8") as f:
+        f.write("utilisateur,nom,prix,stock\n")
         for utilisateur, produits in lignes_anciennes.items():
             for produit in produits:
                 f.write(f"{utilisateur},{produit['nom']},{produit['prix']},{produit['stock']}\n")

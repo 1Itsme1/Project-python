@@ -44,5 +44,90 @@
             }
         ],
         "date": "2025-01-09 23:31:35"
+    },
+    {
+        "utilisateur": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506",
+        "produits": [
+            {
+                "nom": "Ecouteurs Jabra Elite Active 75t",
+                "prix_unitaire": "179.0",
+                "quantite": 3,
+                "prix_total": 537.0,
+                "status": "trait\u00e9e"
+            },
+            {
+                "nom": "Ecran 27 Dell UltraSharp 4K",
+                "prix_unitaire": "799.0",
+                "quantite": 3,
+                "prix_total": 2397.0,
+                "status": "trait\u00e9e"
+            }
+        ],
+        "date": "2025-01-17 16:19:59"
+    },
+    {
+        "utilisateur": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506",
+        "produits": [
+            {
+                "nom": "Haut-parleurs Logitech Z623",
+                "prix_unitaire": "149.0",
+                "quantite": 4,
+                "prix_total": 596.0,
+                "status": "trait\u00e9e"
+            }
+        ],
+        "date": "2025-01-17 16:20:18"
+    },
+    {
+        "utilisateur": "961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506",
+        "produits": [
+            {
+                "nom": "Casque VR Oculus Quest 2",
+                "prix_unitaire": "399.0",
+                "quantite": 1,
+                "prix_total": 399.0,
+                "status": "trait\u00e9e"
+            }
+        ],
+        "date": "2025-01-18 02:30:05"
+    },
+    {
+        "utilisateur": "3ec6f1c53d1ade26eac1367d951871f7bfd89b14fd597e938bf611cc4e04112b",
+        "produits": [
+            {
+                "nom": "Alimentation be quiet! Straight Power 11 850W",
+                "prix_unitaire": "159.0",
+                "quantite": 3,
+                "prix_total": 477.0,
+                "status": "trait\u00e9e"
+            }
+        ],
+        "date": "2025-01-18 02:53:25"
+    },
+    {
+        "utilisateur": "b822f99a7142e909d1b0df5b7f73270e083a1900bc11003d8e4dfcf5f53f7f5e",
+        "produits": [
+            {
+                "nom": "Clavier Logitech G915 TKL",
+                "prix_unitaire": "229.0",
+                "quantite": 1,
+                "prix_total": 229.0,
+                "status": "trait\u00e9e"
+            }
+        ],
+        "date": "2025-01-18 03:50:28"
+    },
+    {
+        "utilisateur": "b822f99a7142e909d1b0df5b7f73270e083a1900bc11003d8e4dfcf5f53f7f5e",
+        "produits": [
+            {
+                "nom": "Tapis de souris Corsair MM300",
+                "prix_unitaire": "39.0",
+                "quantite": 1,
+                "prix_total": 39.0,
+                "status": "trait\u00e9e"
+            }
+        ],
+        "date": "2025-01-18 03:50:46"
     }
 ]

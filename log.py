@@ -12,7 +12,7 @@ def verifier_connexion(email, password):
     fichier_usernames_passwords = "./Data/usernames_passwords.csv"
     
     if not os.path.exists(fichier_usernames_passwords):
-        return False, None  # Pas de comptes existants
+        return False, None  
     
     with open(fichier_usernames_passwords, 'r', encoding='utf-8') as csvfile:
         reader = csv.reader(csvfile, delimiter=',')
@@ -43,16 +43,16 @@ def creer_compte(email, password):
         reader = csv.reader(csvfile, delimiter=',')
         rows = list(reader)
 
-    # Vérification si l'utilisateur existe déjà
+    
     hash_user = sha256(email.encode('utf-8')).hexdigest()
     for row in rows[1:]:
         if len(row) < 3:
             continue
         log_user = row[0].strip()
         if log_user == hash_user:
-            return False, None  # L'utilisateur existe déjà
+            return False, None
 
-    # Création de l'utilisateur
+    
     salt = generer_salt()
     hash_password = sha256((salt + password).encode('utf-8')).hexdigest()
 

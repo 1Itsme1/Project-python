@@ -8,24 +8,32 @@ from hashlib import sha256
 import json
 from datetime import datetime
 import csv 
+import matplotlib.pyplot as plt
+from tkinter import Toplevel, Frame, Label, Button
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.ticker import MaxNLocator
+
 #===========================================================================================================
 
 def afficher_page_connexion():
     
     for widget in fenetre.winfo_children():
         widget.pack_forget()
-
-    
+    titre = Label(fenetre, text="Bienvenue sur l'application qui gère votre stock !", font=("Helvetica", 18, "bold"), fg="#343A40")
     titre.pack(pady=30)
+
+
+    boutonConnexion = Button(fenetre, text="Connexion", command=afficher_champs_saisie_connexion, width=20, height=3, font=("Helvetica", 14), bg="#28A745", fg="white")
     boutonConnexion.pack(pady=20, fill=X, padx=50)
+
+    boutonCreation = Button(fenetre, text="Créer un compte", command=afficher_champs_saisie_creation, width=20, height=3, font=("Helvetica", 14), bg="#28A745", fg="white")
     boutonCreation.pack(pady=20, fill=X, padx=50)
 #===========================================================================================================
 
 def afficher_champs_saisie_connexion():
     
-    boutonConnexion.pack_forget()
-    boutonCreation.pack_forget()
-    titre.pack_forget()
+    for widget in fenetre.winfo_children():
+        widget.pack_forget()
 
     
     frame_connexion = Frame(fenetre, padx=30, pady=30)
@@ -63,17 +71,17 @@ def afficher_champs_saisie_connexion():
         else:
             MessageBox.showerror("Erreur", "E-mail ou mot de passe invalide.")
 
-    boutonConfirmer1 = Button(frame_connexion, text="Confirmer", command=confirmer_connexion, width=20, height=2, font=("Helvetica", 12), bg="#28A745", fg="white", bd=0)
+    boutonConfirmer1 = Button(frame_connexion, text="Confirmer", command=confirmer_connexion, width=20, height=2, font=("Helvetica", 12), bg="#28A745", fg="white")
     boutonConfirmer1.pack(pady=20)
 
-    boutonRetour = Button(frame_connexion, text="Retour", command=afficher_page_connexion, width=15, height=2, font=("Helvetica", 12), bg="#DC3545", fg="white", bd=0)
+    boutonRetour = Button(frame_connexion, text="Retour", command=afficher_page_connexion, width=15, height=2, font=("Helvetica", 12), bg="#DC3545", fg="white")
     boutonRetour.pack(pady=10)
 #===========================================================================================================
 
 def afficher_champs_saisie_creation():
-    boutonConnexion.pack_forget()
-    boutonCreation.pack_forget()
-    titre.pack_forget()
+
+    for widget in fenetre.winfo_children():
+        widget.pack_forget()
 
     frame_creation = Frame(fenetre, padx=30, pady=30)
     frame_creation.pack(pady=20)
@@ -108,41 +116,41 @@ def afficher_champs_saisie_creation():
         else:
             MessageBox.showerror("Erreur", "Ce compte existe déjà. Essayez un autre e-mail.")
 
-    boutonConfirmer2 = Button(frame_creation, text="Confirmer", command=confirmer_creation, width=20, height=2, font=("Helvetica", 12), bg="#28A745", fg="white", bd=0)
+    boutonConfirmer2 = Button(frame_creation, text="Confirmer", command=confirmer_creation, width=20, height=2, font=("Helvetica", 12), bg="#28A745", fg="white")
     boutonConfirmer2.pack(pady=20)
 
-    boutonRetour = Button(frame_creation, text="Retour", command=afficher_page_connexion, width=15, height=2, font=("Helvetica", 12), bg="#DC3545", fg="white", bd=0)
+    boutonRetour = Button(frame_creation, text="Retour", command=afficher_page_connexion, width=15, height=2, font=("Helvetica", 12), bg="#DC3545", fg="white")
     boutonRetour.pack(pady=10)
 #===========================================================================================================
 
 def afficher_page_principale(utilisateur):
     
     for widget in fenetre.winfo_children():
-            widget.pack_forget()
+            widget.destroy()
 
     name_avant_arobase = utilisateur.split('@')[0]
     titre_principal = Label(fenetre, text=f"Bienvenue {name_avant_arobase} !", font=("Helvetica", 16))
     titre_principal.pack(pady=30)
 
-    bouton_compte = Button(fenetre, text="Compte", width=20, height=3, font=("Helvetica", 14), bg="#28A745", fg="white", bd=0,command=lambda: afficher_page_compte(utilisateur))
+    bouton_compte = Button(fenetre, text="Compte", width=20, height=3, font=("Helvetica", 14), bg="#28A745", fg="white",command=lambda: afficher_page_compte(utilisateur))
     bouton_compte.pack(pady=10)
 
-    bouton_afficher_stock = Button(fenetre, text="Mon stock", width=20, height=3, font=("Helvetica", 14), bg="#2196F3", fg="white", bd=0, command=lambda: afficher_stock(utilisateur))
+    bouton_afficher_stock = Button(fenetre, text="Mon stock", width=20, height=3, font=("Helvetica", 14), bg="#2196F3", fg="white", command=lambda: afficher_stock(utilisateur))
     bouton_afficher_stock.pack(pady=10)
 
-    bouton_commandes = Button(fenetre, text="Commander", width=20,command=lambda: affichage_commander(utilisateur), height=3, font=("Helvetica", 14), bg="#F39C12", fg="white", bd=0)
+    bouton_commandes = Button(fenetre, text="Commander", width=20,command=lambda: affichage_commander(utilisateur), height=3, font=("Helvetica", 14), bg="#F39C12", fg="white")
     bouton_commandes.pack(pady=10)
 
-    bouton_liste_commandes = Button(fenetre, text="Liste des commandes",command=lambda: lister_commande(utilisateur),width=20, height=3, font=("Helvetica", 14), bg="#F39C12", fg="white", bd=0)
+    bouton_liste_commandes = Button(fenetre, text="Liste des commandes",command=lambda: lister_commande(utilisateur),width=20, height=3, font=("Helvetica", 14), bg="#F39C12", fg="white")
     bouton_liste_commandes.pack(pady=10)
 
-    bouton_stats = Button(fenetre, text="Statistique",width=20, height=3, font=("Helvetica", 14), bg="#4900A6", fg="white", bd=0)
+    bouton_stats = Button(fenetre, text="Statistique",command=lambda:afficher_statistiques(utilisateur),width=20, height=3, font=("Helvetica", 14), bg="#4900A6", fg="white")
     bouton_stats.pack(pady=10)
 
-    bouton_deconnexion = Button(fenetre, text="Déconnexion", command=lambda:deconnexion(utilisateur), width=20, height=3, font=("Helvetica", 14), bg="#DC3545", fg="white", bd=0)
+    bouton_deconnexion = Button(fenetre, text="Déconnexion", command=lambda:deconnexion(utilisateur), width=20, height=3, font=("Helvetica", 14), bg="#DC3545", fg="white")
     bouton_deconnexion.pack(pady=10)
 
-    bouton_quitter = Button(fenetre, text="Quitter", command=lambda: quitter_fenetre(utilisateur), width=20, height=3, font=("Helvetica", 14), bg="#DC3545", fg="white", bd=0)
+    bouton_quitter = Button(fenetre, text="Quitter", command=lambda: quitter_fenetre(utilisateur), width=20, height=3, font=("Helvetica", 14), bg="#DC3545", fg="white")
     bouton_quitter.pack(pady=10)
 #===========================================================================================================
 
@@ -185,11 +193,9 @@ def afficher_stock_gui_all(fenetre, assignations):
     return tree
 
 #===========================================================================================================
-
 def afficher_stock(utilisateur):
     for widget in fenetre.winfo_children():
         widget.pack_forget()
-
     
     assignations = lire_stock_global(fichier_produit, utilisateur)
     utilisateur_hash = sha256(utilisateur.strip().encode('utf-8')).hexdigest()
@@ -247,6 +253,7 @@ def afficher_stock(utilisateur):
     Button(frame_outils, text="Nom", command=lambda: trier_stock("nom"), font=("Helvetica", 12), bg="#007BFF", fg="white").pack(side=LEFT, padx=5)
     Button(frame_outils, text="Prix", command=lambda: trier_stock("prix"), font=("Helvetica", 12), bg="#007BFF", fg="white").pack(side=LEFT, padx=5)
     Button(frame_outils, text="Quantité", command=lambda: trier_stock("stock"), font=("Helvetica", 12), bg="#007BFF", fg="white").pack(side=LEFT, padx=5)
+    Button(frame_outils, text="Rafraîchir", command=lambda: afficher_stock(utilisateur), font=("Helvetica", 12), bg="#007BFF", fg="white").pack(side=LEFT, padx=5)
 
 #========================================================
     def trier_stock(critere):
@@ -258,12 +265,11 @@ def afficher_stock(utilisateur):
     tree = afficher_stock_gui(fenetre, assignations, utilisateur_hash)
 
 
-    Button(fenetre, text="Ajouter un produit", command=lambda: ajouter_produit_gui(fenetre, assignations, utilisateur_hash, tree), width=20, height=2, font=("Helvetica", 12), bg="#28A745", fg="white", bd=0).pack(pady=10)
-    Button(fenetre, text="Modifier un produit", command=lambda: modifier_produit_gui(fenetre, assignations, utilisateur_hash, tree), width=20, height=2, font=("Helvetica", 12), bg="#FFC107", fg="white", bd=0).pack(pady=10)
-    Button(fenetre, text="Supprimer un produit", command=lambda: supprimer_produit_gui(fenetre, assignations, utilisateur_hash, tree), width=20, height=2, font=("Helvetica", 12), bg="#DC3545", fg="white", bd=0).pack(pady=10)
+    Button(fenetre, text="Ajouter un produit", command=lambda: ajouter_produit_gui(fenetre, assignations, utilisateur_hash, tree), width=20, height=2, font=("Helvetica", 12), bg="#28A745", fg="white").pack(pady=10)
+    Button(fenetre, text="Modifier un produit", command=lambda: modifier_produit_gui(fenetre, assignations, utilisateur_hash, tree), width=20, height=2, font=("Helvetica", 12), bg="#FFC107", fg="white").pack(pady=10)
+    Button(fenetre, text="Supprimer un produit", command=lambda: supprimer_produit_gui(fenetre, assignations, utilisateur_hash, tree), width=20, height=2, font=("Helvetica", 12), bg="#DC3545", fg="white").pack(pady=10)
     
-    bouton_retour = Button(fenetre, text="Retour", command=lambda: afficher_page_principale(utilisateur), width=20, height=2, font=("Helvetica", 12), bg="#6C757D", fg="white", bd=0)
-    bouton_retour.pack(pady=20)
+    Button(fenetre, text="Retour", command=lambda: afficher_page_principale(utilisateur), font=("Helvetica", 12), bg="#6C757D", fg="white").pack(pady=20)
 
 
 
@@ -433,18 +439,16 @@ def afficher_page_compte(utilisateur):
 
     bouton_changer_mdp = Button(fenetre, text="Changer mon mot de passe", 
                                  command=lambda: changer_mot_de_passe_graphique(fichier_usernames_passwords,utilisateur_hash,fenetre), 
-                                 width=20, height=2, font=("Helvetica", 12), bg="#007BFF", fg="white", bd=0)
+                                 width=20, height=2, font=("Helvetica", 12), bg="#007BFF", fg="white")
     bouton_changer_mdp.pack(pady=10)
 
     bouton_supp_compte = Button(fenetre, text="Supprimer mon compte",  
                              command=lambda: suppression_compte(fichier_usernames_passwords, fichier_produit, utilisateur_hash, verifier_mot_de_passe, fenetre), 
-                             width=20, height=2, font=("Helvetica", 12), bg="#DC3545", fg="white", bd=0)
+                             width=20, height=2, font=("Helvetica", 12), bg="#DC3545", fg="white")
     bouton_supp_compte.pack(pady=10)
 
 
-    bouton_retour = Button(fenetre, text="Retour", command=lambda: afficher_page_principale(utilisateur), 
-                           width=20, height=2, font=("Helvetica", 12), bg="#6C757D", fg="white", bd=0)
-    bouton_retour.pack(pady=10)
+    Button(fenetre, text="Retour", command=lambda: afficher_page_principale(utilisateur), font=("Helvetica", 12), bg="#6C757D", fg="white").pack(pady=20)
 
 #===========================================================================================================
 def affichage_commander(utilisateur):
@@ -474,7 +478,7 @@ def affichage_commander(utilisateur):
             tree.delete(item)
         for produit in produits:
             tree.insert("", "end", values=(produit["nom"], produit["prix"], produit["stock"]))
-
+        
  #========================================================   
     def rechercher_produit():
         nom_recherche = valeur_recherche.get().strip().lower()
@@ -494,6 +498,7 @@ def affichage_commander(utilisateur):
         produits_tries = tri_rapide(assignations, key=critere)
         rafraichir_treeview(produits_tries)
 
+    
    
     Label(frame_outils, text="Rechercher un produit : ", font=("Helvetica", 12)).pack(side=LEFT, padx=5)
     valeur_recherche = StringVar()
@@ -502,11 +507,11 @@ def affichage_commander(utilisateur):
 
     Button(frame_outils, text="Rechercher", command=rechercher_produit, font=("Helvetica", 12), bg="#6C757D", fg="white").pack(side=LEFT, padx=5)
 
-    
     Label(frame_outils, text="Trier par : ", font=("Helvetica", 12)).pack(side=LEFT, padx=10)
     Button(frame_outils, text="Nom", command=lambda: trier_stock("nom"), font=("Helvetica", 12), bg="#007BFF", fg="white").pack(side=LEFT, padx=5)
     Button(frame_outils, text="Prix", command=lambda: trier_stock("prix"), font=("Helvetica", 12), bg="#007BFF", fg="white").pack(side=LEFT, padx=5)
     Button(frame_outils, text="Quantité", command=lambda: trier_stock("stock"), font=("Helvetica", 12), bg="#007BFF", fg="white").pack(side=LEFT, padx=5)
+    Button(frame_outils, text="Rafraîchir", command=lambda:rafraichir_treeview(assignations), font=("Helvetica", 12), bg="#007BFF", fg="white").pack(side=LEFT, padx=5)
 
     Label(fenetre, text="Quantité à commander :", font=("Helvetica", 12)).pack(pady=10)
     quantite_var = StringVar()
@@ -673,32 +678,85 @@ def lister_commande(utilisateur):
                 commande["date"]
             ))
 
-    Button(fenetre, text="Retour", command=lambda: afficher_page_principale(utilisateur), font=("Helvetica", 12), bg="#DC3545", fg="white").pack(pady=20)
-#========================================================
+    Button(fenetre, text="Retour", command=lambda: afficher_page_principale(utilisateur), font=("Helvetica", 12), bg="#6C757D", fg="white").pack(pady=20)
+#===========================================================================================================
+def afficher_statistiques(utilisateur):
+    
+    for widget in fenetre.winfo_children():
+        widget.destroy()
 
+    
+    Label(fenetre, text="Statistiques des stocks et ventes", font=("Helvetica", 16)).pack(pady=20)
+
+    statistiques = calculer_statistiques(utilisateur)
+    afficher_graphique_ventes(statistiques['ventes'])
+
+    Button(fenetre, text="Retour", command=lambda: afficher_page_principale(utilisateur), font=("Helvetica", 12), bg="#6C757D", fg="white").pack(pady=20)
+#========================================================
+def afficher_graphique_ventes(ventes):
+    
+    frame_graphique_ventes = Frame(fenetre)
+    frame_graphique_ventes.pack(pady=20)
+
+    
+    produits = list(ventes.keys()) 
+    quantites = list(ventes.values()) 
+
+   
+    fig, ax = plt.subplots(figsize=(15, 7)) 
+    ax.barh(produits, quantites, color='skyblue')  
+
+    ax.set_title('Quantité vendue par produit')
+    plt.subplots_adjust(left=0.25, right=0.9, top=0.9, bottom=0.1)
+    ax.set_yticks(range(len(produits)))
+    ax.set_yticklabels(produits, fontsize=10) 
+
+    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+    
+    for label in ax.get_yticklabels():
+        label.set_text('\n'.join([label.get_text()[i:i+20] for i in range(0, len(label.get_text()), 20)]))
+
+    
+    canvas = FigureCanvasTkAgg(fig, master=frame_graphique_ventes)
+    canvas.draw()
+    canvas.get_tk_widget().pack()
+#========================================================
+def calculer_statistiques(utilisateur):
+    with open(fichier_commandes, "r", encoding="utf-8") as f:
+        commandes = json.load(f)
+
+    with open(fichier_produit, "r", encoding="utf-8") as f:
+        lecteur_csv = csv.DictReader(f) 
+        stock_global = [ligne for ligne in lecteur_csv if ligne['utilisateur'] == utilisateur]
+
+    ventes = {}
+    for commande in commandes:
+        for produit in commande["produits"]:
+                nom = produit["nom"]
+                quantite = produit["quantite"]
+                if nom in ventes:
+                    ventes[nom] += quantite
+                else:
+                    ventes[nom] = quantite
+
+    return {
+        "ventes": ventes 
+    }
+#===========================================================================================================
 def deconnexion(utilisateur):
     MessageBox.showinfo("Déconnexion", "Vous êtes maintenant déconnecté.")
     enregistrer_historique_requete("./Data/historique_requetes.csv",utilisateur, "Déconnexion...")
+    for widget in fenetre.winfo_children():
+        widget.pack_forget()
     afficher_page_connexion()
-#===========================================================================================================
-
+#===========================================================================================================    
 fenetre = Tk()  
 fenetre.geometry("1200x900")
 fenetre.title("Gestion de stock")
 fenetre.config(bg="#F8F9FA")  
 
-
-titre = Label(fenetre, text="Bienvenue sur l'application qui gère votre stock !", font=("Helvetica", 18, "bold"), fg="#343A40")
-titre.pack(pady=30)
-
-
-boutonConnexion = Button(fenetre, text="Connexion", command=afficher_champs_saisie_connexion, width=20, height=3, font=("Helvetica", 14), bg="#28A745", fg="white", bd=0)
-boutonConnexion.pack(pady=20, fill=X, padx=50)
-
-boutonCreation = Button(fenetre, text="Créer un compte", command=afficher_champs_saisie_creation, width=20, height=3, font=("Helvetica", 14), bg="#28A745", fg="white", bd=0)
-boutonCreation.pack(pady=20, fill=X, padx=50)
-
 fichier_commandes = "./DATA/commandes.json"
 fichier_produit = "./Data/assignations_stock.csv"
 fichier_usernames_passwords = "./Data/usernames_passwords.csv"
+afficher_page_connexion()
 fenetre.mainloop()
