@@ -142,5 +142,44 @@
             }
         ],
         "date": "2025-01-19 19:21:20"
+    },
+    {
+        "utilisateur": "3ec6f1c53d1ade26eac1367d951871f7bfd89b14fd597e938bf611cc4e04112b",
+        "produits": [
+            {
+                "nom": "SSD Kingston A2000 500Go",
+                "prix_unitaire": "59.0",
+                "quantite": 2,
+                "prix_total": 118.0,
+                "status": "trait\u00e9e"
+            }
+        ],
+        "date": "2025-01-19 21:03:09"
+    },
+    {
+        "utilisateur": "3ec6f1c53d1ade26eac1367d951871f7bfd89b14fd597e938bf611cc4e04112b",
+        "produits": [
+            {
+                "nom": "SSD Kingston A2000 500Go",
+                "prix_unitaire": "59.0",
+                "quantite": 2,
+                "prix_total": 118.0,
+                "status": "trait\u00e9e"
+            }
+        ],
+        "date": "2025-01-19 21:42:38"
+    },
+    {
+        "utilisateur": "3ec6f1c53d1ade26eac1367d951871f7bfd89b14fd597e938bf611cc4e04112b",
+        "produits": [
+            {
+                "nom": "P\u00e2te thermique Arctic MX-4",
+                "prix_unitaire": "6.0",
+                "quantite": 10,
+                "prix_total": 60.0,
+                "status": "trait\u00e9e"
+            }
+        ],
+        "date": "2025-01-19 21:44:10"
     }
 ]

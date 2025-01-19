@@ -565,7 +565,7 @@ def affichage_commander(utilisateur):
 
         try:
            
-            with open(fichier_commandes, "r") as f:
+            with open(fichier_commandes, "r",encoding="utf-8") as f:
                 historique_commandes = json.load(f)
         except FileNotFoundError:
             historique_commandes = []
@@ -573,7 +573,7 @@ def affichage_commander(utilisateur):
         
         stock_global = []
         try:
-            with open(fichier_produit, "r") as f:
+            with open(fichier_produit, "r",encoding="utf-8") as f:
                 lecteur_csv = csv.DictReader(f)
                 for ligne in lecteur_csv:
                     ligne["stock"] = int(ligne["stock"])  
