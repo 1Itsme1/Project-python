@@ -129,5 +129,18 @@
             }
         ],
         "date": "2025-01-18 03:50:46"
+    },
+    {
+        "utilisateur": "3ec6f1c53d1ade26eac1367d951871f7bfd89b14fd597e938bf611cc4e04112b",
+        "produits": [
+            {
+                "nom": "Haut-parleurs Creative Pebble 2.0",
+                "prix_unitaire": "25.0",
+                "quantite": 1,
+                "prix_total": 25.0,
+                "status": "trait\u00e9e"
+            }
+        ],
+        "date": "2025-01-19 19:21:20"
     }
 ]
